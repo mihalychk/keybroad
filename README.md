@@ -2,6 +2,10 @@
 
 Keybroad is a tiny app that starts up with your Mac and helps you type faster and more comfortable. It also automatically formats your text the way typography nerds do.
 
+## Download
+
+[Download](https://github.com/mihalychk/keybroad/releases/latest) the latest Keybroad's release.
+
 ## The Double-Space
 
 You've already seen KB's key feature on your iPhone and iPad: press the `SPACE` button twice to type `DOT+SPACE` after the last word you've entered. This little improvement helps to unify the experiences and switch from typing on iPhone or iPad to your Mac seamlessly. Auto-capitalization included.
