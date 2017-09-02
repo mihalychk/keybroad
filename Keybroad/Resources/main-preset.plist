@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Order</key>
+	<integer>0</integer>
+	<key>Active</key>
+	<integer>1</integer>
+	<key>Rules</key>
+	<array>
+		<dict>
+			<key>Replacement</key>
+			<string>$1. </string>
+			<key>Title</key>
+			<string>Double-Space for Dot+Space</string>
+			<key>Rule</key>
+			<string>([\w\&quot;«»“”\)]{1})[ | ]{2}</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1, </string>
+			<key>Title</key>
+			<string>Double-Dot for Comma+Space</string>
+			<key>Rule</key>
+			<string>(\w)\.\.</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>...</string>
+			<key>Title</key>
+			<string>Comma-Space-Dot for Triple Dots</string>
+			<key>Rule</key>
+			<string>\,[ | ]{1}\.</string>
+		</dict>
+	</array>
+	<key>Hidden</key>
+	<integer>1</integer>
+	<key>Title</key>
+	<string>Main Preset</string>
+</dict>
+</plist>

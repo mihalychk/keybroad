@@ -6,6 +6,10 @@ Keybroad is a tiny app that starts up with your Mac and helps you type faster
 
 You've already seen KB's key feature on your iPhone and iPad: press the `SPACE` button twice to type `DOT+SPACE` after the last word you've entered. This little improvement helps to unify the experiences and switch from typing on iPhone or iPad to your Mac seamlessly. Auto-capitalization included.
 
+## Selected text
+
+The `CMD+CTRL+T` makes you selected text beautiful.
+
 ## Typographer
 
 Besides that helpful shortcut for `DOT+SPACE`, Keybroad automatically inserts special symbols and corrects punctuations as you type, so your texts look cleaner and more professional:
@@ -35,8 +39,8 @@ Besides that helpful shortcut for `DOT+SPACE`, Keybroad automatically inserts s
 
 | Spanish Keyboard Layout | | Output
 | --- | --- | ---
-| `!abc` | | `¡abc` |
-| `?abc` | | `¿abc` |
+| `!abc` | Exclamation sign before any word | `¡abc` |
+| `?abc` | Question sign before any word | `¿abc` |
 
 ## Everywhere you need it
 

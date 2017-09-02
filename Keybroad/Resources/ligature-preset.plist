@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Active</key>
+	<integer>0</integer>
+	<key>Rules</key>
+	<array>
+		<dict>
+			<key>Replacement</key>
+			<string>ﬁ</string>
+			<key>Title</key>
+			<string>ﬁ ligature</string>
+			<key>Rule</key>
+			<string>fi</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>ﬂ</string>
+			<key>Title</key>
+			<string>ﬂ ligature</string>
+			<key>Rule</key>
+			<string>fl</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>œ</string>
+			<key>Title</key>
+			<string>œ ligature</string>
+			<key>Rule</key>
+			<string>oe</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>Œ</string>
+			<key>Title</key>
+			<string>Œ ligature</string>
+			<key>Rule</key>
+			<string>OE</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>ᵫ</string>
+			<key>Title</key>
+			<string>ᵫ ligature</string>
+			<key>Rule</key>
+			<string>ue</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>æ</string>
+			<key>Title</key>
+			<string>æ ligature</string>
+			<key>Rule</key>
+			<string>ae</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>Æ</string>
+			<key>Title</key>
+			<string>Æ ligature</string>
+			<key>Rule</key>
+			<string>AE</string>
+		</dict>
+	</array>
+	<key>Title</key>
+	<string>Ligatures</string>
+	<key>Layouts</key>
+	<array>
+		<string>en</string>
+	</array>
+</dict>
+</plist>

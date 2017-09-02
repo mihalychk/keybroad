@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Active</key>
+	<integer>1</integer>
+	<key>Rules</key>
+	<array>
+		<dict>
+			<key>Replacement</key>
+			<string>. $1</string>
+			<key>Title</key>
+			<string>Auto Capitalization</string>
+			<key>Rule</key>
+			<string>\.[ | ]{1}(\w)</string>
+			<key>Transform</key>
+			<string>uppercase</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>! $1</string>
+			<key>Title</key>
+			<string>Auto Capitalization</string>
+			<key>Rule</key>
+			<string>\![ | ]{1}(\w)</string>
+			<key>Transform</key>
+			<string>uppercase</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>? $1</string>
+			<key>Title</key>
+			<string>Auto Capitalization</string>
+			<key>Rule</key>
+			<string>\?[ | ]{1}(\w)</string>
+			<key>Transform</key>
+			<string>uppercase</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1$2</string>
+			<key>Title</key>
+			<string>Auto Capitalization</string>
+			<key>Rule</key>
+			<string>(\r){1}(\w){1}</string>
+			<key>Transform</key>
+			<string>uppercase</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1</string>
+			<key>Title</key>
+			<string>Auto Capitalization</string>
+			<key>Rule</key>
+			<string>^(\w)</string>
+			<key>Transform</key>
+			<string>uppercase</string>
+			<key>FromLineStart</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>Title</key>
+	<string>Auto-Capitalization</string>
+</dict>
+</plist>

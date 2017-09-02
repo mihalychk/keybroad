@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Active</key>
+	<integer>1</integer>
+	<key>Rules</key>
+	<array>
+		<dict>
+			<key>Replacement</key>
+			<string>$1»$2</string>
+			<key>Title</key>
+			<string>Right quotes</string>
+			<key>Rule</key>
+			<string>(\w)\&quot;([^\&quot;]{1}|$)</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+				<string>es</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1«$2</string>
+			<key>Title</key>
+			<string>Left quotes</string>
+			<key>Rule</key>
+			<string>([^\&quot;]*)\&quot;(\w)</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+				<string>es</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>«»</string>
+			<key>Title</key>
+			<string>Left and Right quotes</string>
+			<key>Rule</key>
+			<string>\&quot;\&quot;</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>«»</string>
+			<key>Title</key>
+			<string>Left and Right quotes</string>
+			<key>Rule</key>
+			<string>ЭЭ</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+			<key>Case Sensitive</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>«»</string>
+			<key>Title</key>
+			<string>Left and Right quotes</string>
+			<key>Rule</key>
+			<string>\&quot;\&quot;</string>
+			<key>Layouts</key>
+			<array>
+				<string>es</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1«$2</string>
+			<key>Title</key>
+			<string>Right quotes Deutsch</string>
+			<key>Rule</key>
+			<string>(\w)\&quot;([^\&quot;]{1}|$)</string>
+			<key>Layouts</key>
+			<array>
+				<string>de</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1»$2</string>
+			<key>Title</key>
+			<string>Left quotes Deutsch</string>
+			<key>Rule</key>
+			<string>([^\&quot;]*)\&quot;(\w)</string>
+			<key>Layouts</key>
+			<array>
+				<string>de</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>»«</string>
+			<key>Title</key>
+			<string>Left and Right quotes Deutsch</string>
+			<key>Rule</key>
+			<string>\&quot;\&quot;</string>
+			<key>Layouts</key>
+			<array>
+				<string>de</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1”$2</string>
+			<key>Title</key>
+			<string>Right quotes English</string>
+			<key>Rule</key>
+			<string>(\w)\&quot;([^\&quot;]{1}|$)</string>
+			<key>Layouts</key>
+			<array>
+				<string>en</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1“$2</string>
+			<key>Title</key>
+			<string>Left quotes English</string>
+			<key>Rule</key>
+			<string>([^\&quot;]*)\&quot;(\w)</string>
+			<key>Layouts</key>
+			<array>
+				<string>en</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>“”</string>
+			<key>Title</key>
+			<string>Left and Right quotes English</string>
+			<key>Rule</key>
+			<string>\&quot;\&quot;</string>
+			<key>Layouts</key>
+			<array>
+				<string>en</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1 °C</string>
+			<key>Title</key>
+			<string>°C</string>
+			<key>Rule</key>
+			<string>(\d){1}(oc|oC|dc|dC|ос|оС){1}</string>
+			<key>Case Sensitive</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1 °F</string>
+			<key>Title</key>
+			<string>°F</string>
+			<key>Rule</key>
+			<string>(\d){1}(of|oF|df|dF){1}</string>
+			<key>Case Sensitive</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1.$2</string>
+			<key>Title</key>
+			<string>Ю for Dot</string>
+			<key>Rule</key>
+			<string>(\d)ю(\d)</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1:$2</string>
+			<key>Title</key>
+			<string>Ж for :</string>
+			<key>Rule</key>
+			<string>(\d)Ж(\d)</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1,$2</string>
+			<key>Title</key>
+			<string>Б for Comma</string>
+			<key>Rule</key>
+			<string>(\d)б(\d)</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1¡$2</string>
+			<key>Title</key>
+			<string>¡</string>
+			<key>Rule</key>
+			<string>([^\!]*)\!(\w)</string>
+			<key>Layouts</key>
+			<array>
+				<string>es</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1¿$2</string>
+			<key>Title</key>
+			<string>¿</string>
+			<key>Rule</key>
+			<string>([^\?]*)\?(\w)</string>
+			<key>Layouts</key>
+			<array>
+				<string>es</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>←</string>
+			<key>Title</key>
+			<string>Arrow Left</string>
+			<key>Rule</key>
+			<string>\&lt;\-</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1←</string>
+			<key>Title</key>
+			<string>Arrow Left</string>
+			<key>Rule</key>
+			<string>([\s]){1}Б\-</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+			<key>Case Sensitive</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>→</string>
+			<key>Title</key>
+			<string>Arrow Right</string>
+			<key>Rule</key>
+			<string>\-\&gt;</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>→$1</string>
+			<key>Title</key>
+			<string>Arrow Right</string>
+			<key>Rule</key>
+			<string>\-Ю([\s]){1}</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+			<key>Case Sensitive</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>↑</string>
+			<key>Title</key>
+			<string>Arrow Up</string>
+			<key>Rule</key>
+			<string>(\|\^)|(\^\|)</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>—</string>
+			<key>Title</key>
+			<string>Double dash</string>
+			<key>Rule</key>
+			<string>\-\-</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string> —</string>
+			<key>Title</key>
+			<string>Space before dash</string>
+			<key>Rule</key>
+			<string>[ ]{1}—</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string> — </string>
+			<key>Title</key>
+			<string>Single dash between spaces</string>
+			<key>Rule</key>
+			<string>[ | ]{1}\-[ | ]{1}</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1−$2</string>
+			<key>Title</key>
+			<string>Single dash between digits</string>
+			<key>Rule</key>
+			<string>([0-9]){1}\-([0-9]){1}</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1×$2</string>
+			<key>Title</key>
+			<string>X between digits</string>
+			<key>Rule</key>
+			<string>([0-9]){1}x([0-9]){1}</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1×$2</string>
+			<key>Title</key>
+			<string>Х между цифрами</string>
+			<key>Rule</key>
+			<string>([0-9]){1}х([0-9]){1}</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1×$2</string>
+			<key>Title</key>
+			<string>Ч между цифрами</string>
+			<key>Rule</key>
+			<string>([0-9]){1}ч([0-9]){1}</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>©</string>
+			<key>Title</key>
+			<string>Copyright</string>
+			<key>Rule</key>
+			<string>\(c\)|\(с\)</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>®</string>
+			<key>Title</key>
+			<string>Registered Trademark</string>
+			<key>Rule</key>
+			<string>\(r\)|\(R\)</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>™</string>
+			<key>Title</key>
+			<string>Trademark</string>
+			<key>Rule</key>
+			<string>\(tm\)|\(тм\)</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>±</string>
+			<key>Title</key>
+			<string>± Number</string>
+			<key>Rule</key>
+			<string>\+\-|\-\+</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>≠</string>
+			<key>Title</key>
+			<string>≠ Symbol</string>
+			<key>Rule</key>
+			<string>\\\=|\=\\|/\=|\=/</string>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1$2 </string>
+			<key>Title</key>
+			<string>Prepositions</string>
+			<key>Rule</key>
+			<string>([ | |^]){1}(in|on|at|a|an|to|the|into|out|by|till|since|for|and|but|or|when|that|so|as|of){1}[ ]{1}</string>
+			<key>Layouts</key>
+			<array>
+				<string>en</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1$2 </string>
+			<key>Title</key>
+			<string>Preposiciones</string>
+			<key>Rule</key>
+			<string>([ | |^]){1}(a|al|un|una|unos|unas|la|lo|le|las|les|me|te|se|nos|os|ante|bajo|cabe|con|de|desde|en|entre|hacia|hasta|para|por|según|segun|sin|so|sobre|tras){1}[ ]{1}</string>
+			<key>Layouts</key>
+			<array>
+				<string>es</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Replacement</key>
+			<string>$1$2 </string>
+			<key>Title</key>
+			<string>Предлоги</string>
+			<key>Rule</key>
+			<string>([ | |^]){1}(с|у|в|а|о|к|и|из|со|от|на|по|за|до|об|при|для|про|без|под|над|изо|ну|как|ни|не|но){1}[ ]{1}</string>
+			<key>Layouts</key>
+			<array>
+				<string>ru</string>
+			</array>
+		</dict>
+	</array>
+	<key>Title</key>
+	<string>Typographer</string>
+</dict>
+</plist>
