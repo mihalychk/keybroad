@@ -10,8 +10,8 @@ You've already seen KB's key feature on your iPhone and iPad: press the `SPAC
 
 Besides that helpful shortcut for `DOT+SPACE`, Keybroad automatically inserts special symbols and corrects punctuations as you type, so your texts look cleaner and more professional:
 
-| Input |     | Output |
-| ----- | --- | --- |
+| Input | | Output |
+| --- | --- | --- |
 | `--` | Two hyphens | `—` (em dash) |
 | ` - ` | Hyphen surrounded by spaces | ` — ` (unbreakable space + em dash + space) |
 | `(c)` | | `©` |
@@ -26,12 +26,17 @@ Besides that helpful shortcut for `DOT+SPACE`, Keybroad automatically inserts s
 | `1x2` | letter `x` surrounded by any two digits | `1×2` (multiplication sign added) |
 
 | Cyrillic Keyboard Layout | | Output
-| ----- | --- | ---
+| --- | --- | ---
 | `..` | Two dots | `, ` (comma and space) |
 | `3ю14` | | `3.14` |
 | `3б14` | | `3,14` |
 | `3ж14` | | `3:14` |
 | `3ч14` | Also works as `3х14` | `3×14` |
+
+| Spanish Keyboard Layout | | Output
+| --- | --- | ---
+| `!abc` | | `¡abc` |
+| `?abc` | | `¿abc` |
 
 ## Everywhere you need it
 
