@@ -12,7 +12,19 @@ Besides that helpful shortcut for `DOT+SPACE`, Keybroad automatically inserts s
 
 
 
+## Everywhere you need it
 
+Keybroad works with every app we've tested, from TextEdit to Photoshop.
+
+## And nowhere if you don't
+
+If you want to prevent any autocorrections, you can turn Keybroad off for any specific app with two clicks or even shut it down completely by right-clicking the menubar icon.
+
+To prevent autocorrection just once, press the right arrow button while typing combinations listed on the left.
+
+## Unbreakable spaces
+
+Keybroad automatically adds unbreakable spaces before em dashes and after articles, conjunctions and prepositions, so they won't be hanging on the end of the line.
 
 ## Useful CapsLock button<sup>*</sup>
 
