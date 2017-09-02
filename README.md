@@ -10,6 +10,10 @@ You've already seen KB's key feature on your iPhone and iPad: press the `SPAC
 
 Besides that helpful shortcut for `DOT+SPACE`, Keybroad automatically inserts special symbols and corrects punctuations as you type, so your texts look cleaner and more professional:
 
+Input | | Output
+--- | --- | ---
+`--`  | Two hyphens                 | `—` (em dash)
+` - ` | Hyphen surrounded by spaces | ` — ` (unbreakable space + em dash + space)
 
 
 ## Everywhere you need it
