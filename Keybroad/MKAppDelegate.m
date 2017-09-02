@@ -52,10 +52,10 @@
 #pragma mark - init & dealloc
 
 - (void)dealloc {
-	[settingsController	release];
-	[keybroad release];
+    [settingsController release];
+    [keybroad release];
 
-	[super dealloc];
+    [super dealloc];
 }
 
 
@@ -63,50 +63,50 @@
 
 - (void)sharedApplicationWasChangedFrontmostProcess {
     [keybroad onFrontmostAppChanged];
-	[controller setImages];
+    [controller setImages];
 }
 
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-	LAYOUT;
+    LAYOUT;
 
-	if (!SETTINGS.wasInit) {
-		SETTINGS.wasInit = YES;
-		SETTINGS.active = YES;
+    if (!SETTINGS.wasInit) {
+        SETTINGS.wasInit = YES;
+        SETTINGS.active = YES;
 		
-		NSArray * layouts = LAYOUT.layouts;
+        NSArray * layouts = LAYOUT.layouts;
 		
-		if (layouts.count > 1) {
-			SETTINGS.layoutForCapsOff = layouts[0][@"id"];
-			SETTINGS.layoutForCapsOn = layouts[1][@"id"];
-		}
+        if (layouts.count > 1) {
+            SETTINGS.layoutForCapsOff = layouts[0][@"id"];
+            SETTINGS.layoutForCapsOn = layouts[1][@"id"];
+        }
 
-		[SETTINGS setBool:YES forKey:@"preset_main"];
-		[SETTINGS setBool:YES forKey:@"preset_autocapital"];
-		[SETTINGS setBool:YES forKey:@"preset_typograph"];
-		[SETTINGS setBool:YES forKey:@"preset_dbldots"];
-	}
+        [SETTINGS setBool:YES forKey:@"preset_main"];
+        [SETTINGS setBool:YES forKey:@"preset_autocapital"];
+        [SETTINGS setBool:YES forKey:@"preset_typograph"];
+        [SETTINGS setBool:YES forKey:@"preset_dbldots"];
+    }
 
-	PRESETS;
-	SHARED_APP;
-	SHARED_APP.delegate = self;
-	SETTINGS.startup = YES;
+    PRESETS;
+    SHARED_APP;
+    SHARED_APP.delegate = self;
+    SETTINGS.startup = YES;
 
-	if (!MKSystemSettingsController.check) {
-		settingsController = [[MKSystemSettingsController alloc] init];
+    if (!MKSystemSettingsController.check) {
+        settingsController = [[MKSystemSettingsController alloc] init];
 
-		return;
-	}
+        return;
+    }
 
-	keybroad = [[Keybroad alloc] init];
-	controller = [[MKMenuController alloc] init];
+    keybroad = [[Keybroad alloc] init];
+    controller = [[MKMenuController alloc] init];
 }
 
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-	[keybroad release];
-	[controller release];
-    
+    [keybroad release];
+    [controller release];
+
     keybroad = nil;
     controller = nil;
 }

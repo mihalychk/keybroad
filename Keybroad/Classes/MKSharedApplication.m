@@ -64,58 +64,58 @@
 #pragma mark - Public Methods
 
 - (NSString *)frontmostProcessBundleID {
-	return NSWorkspace.sharedWorkspace.frontmostApplication.bundleIdentifier;
+    return NSWorkspace.sharedWorkspace.frontmostApplication.bundleIdentifier;
 }
 
 
 - (pid_t)frontmostProcessID {
-	return NSWorkspace.sharedWorkspace.frontmostApplication.processIdentifier;
+    return NSWorkspace.sharedWorkspace.frontmostApplication.processIdentifier;
 }
 
 
 - (AXUIElementRef)frontmostTopElement:(AXError *)error {
-	pid_t processId = SHARED_APP.frontmostProcessID;
-	AXUIElementRef windowRef = AXUIElementCreateApplication(processId);
-	AXUIElementRef elementRef = nil;
-	
-	*error = AXUIElementCopyAttributeValue(windowRef, CFSTR("AXFocusedUIElement"), (CFTypeRef *)&elementRef);
+    pid_t processId = SHARED_APP.frontmostProcessID;
+    AXUIElementRef windowRef = AXUIElementCreateApplication(processId);
+    AXUIElementRef elementRef = nil;
 
-	CFRelease(windowRef);
-	
-	if (!elementRef)
-		return nil;
-	
-	return elementRef;
+    *error = AXUIElementCopyAttributeValue(windowRef, CFSTR("AXFocusedUIElement"), (CFTypeRef *)&elementRef);
+
+    CFRelease(windowRef);
+
+    if (!elementRef)
+        return nil;
+
+    return elementRef;
 }
 
 
 - (NSString *)frontmostTopElementText:(BOOL)selected {
-	AXError error = kAXErrorSuccess;
-	NSString * value = nil;
-	AXUIElementRef elementRef = [self frontmostTopElement:&error];
-	
-	if (!elementRef)
-		return nil;
-	
-	CFTypeRef val = nil;
-	error = AXUIElementCopyAttributeValue(elementRef, selected ? CFSTR("AXSelectedText") :CFSTR("AXValue"), (CFTypeRef *)&val);
+    AXError error = kAXErrorSuccess;
+    NSString * value = nil;
+    AXUIElementRef elementRef = [self frontmostTopElement:&error];
 
-	CFRelease(elementRef);
-	
-	if (val) {
-		value = [NSString stringWithString:(NSString *)val];
+    if (!elementRef)
+        return nil;
 
-		CFRelease(val);
-	}
-	
-	return value;
+    CFTypeRef val = nil;
+    error = AXUIElementCopyAttributeValue(elementRef, selected ? CFSTR("AXSelectedText") :CFSTR("AXValue"), (CFTypeRef *)&val);
+
+    CFRelease(elementRef);
+
+    if (val) {
+        value = [NSString stringWithString:(NSString *)val];
+
+        CFRelease(val);
+    }
+
+    return value;
 }
 
 
 - (void)printAttributesNames:(AXUIElementRef)elementRef {
-	NSArray * names = nil;
+    NSArray * names = nil;
 
-	AXUIElementCopyAttributeNames(elementRef, (CFArrayRef *)&names);
+    AXUIElementCopyAttributeNames(elementRef, (CFArrayRef *)&names);
 
     NSLog(@"ATTRIBUTES: %@", names);
 
@@ -127,13 +127,13 @@
 
 + (instancetype)sharedInstance {
     static MKSharedApplication * sharedInstance = nil;
-	static dispatch_once_t pred;
-	
-	dispatch_once(&pred, ^{
-		sharedInstance = [[MKSharedApplication alloc] init];
-	});
+    static dispatch_once_t pred;
 
-	return sharedInstance;
+    dispatch_once(&pred, ^{
+        sharedInstance = [[MKSharedApplication alloc] init];
+    });
+
+    return sharedInstance;
 }
 
 

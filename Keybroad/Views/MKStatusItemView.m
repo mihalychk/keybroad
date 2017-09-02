@@ -46,145 +46,145 @@
 #pragma mark - init & dealloc
 
 - (instancetype)initWithStatusBarItem:(NSStatusItem *)statusItem {
-	if ((self = [super initWithFrame:NSZeroRect]))
-		self.statusItem = statusItem;
-	
-	return self;
+    if ((self = [super initWithFrame:NSZeroRect]))
+        self.statusItem = statusItem;
+    
+    return self;
 }
 
 
 - (void)dealloc {
-	self.statusItem = nil;
-	self.delegate = nil;
+    self.statusItem = nil;
+    self.delegate = nil;
     self.image = nil;
     self.alternateImage = nil;
 
-	[super dealloc];
+    [super dealloc];
 }
 
 
 #pragma mark - Properties
 
 - (void)setImage:(NSImage *)value {
-	[value retain];
-	[_image release];
+    [value retain];
+    [_image release];
 
     _image = value;
 
-	[self setNeedsDisplay];
+    [self setNeedsDisplay];
 }
 
 
 - (void)setAlternateImage:(NSImage *)value {
-	[value retain];
-	[_alternateImage release];
+    [value retain];
+    [_alternateImage release];
 
-	_alternateImage = value;
+    _alternateImage = value;
 
-	[self setNeedsDisplay];
+    [self setNeedsDisplay];
 }
 
 
 #pragma mark - NSView
 
 - (void)drawRect:(NSRect)rect {
-	BOOL highlighted = isMouseDown || isMenuVisible;
+    BOOL highlighted = isMouseDown || isMenuVisible;
 
-	[self.statusItem drawStatusBarBackgroundInRect:self.bounds withHighlight:highlighted];
+    [self.statusItem drawStatusBarBackgroundInRect:self.bounds withHighlight:highlighted];
 
-	NSSize imageSize = self.image.size;
-	NSPoint coords = NSMakePoint(ceil((self.bounds.size.width - imageSize.width) / 2), ceil((self.bounds.size.height - imageSize.height) / 2));
-	NSRect imageRect = NSMakeRect(coords.x, coords.y, imageSize.width, imageSize.height);
+    NSSize imageSize = self.image.size;
+    NSPoint coords = NSMakePoint(ceil((self.bounds.size.width - imageSize.width) / 2), ceil((self.bounds.size.height - imageSize.height) / 2));
+    NSRect imageRect = NSMakeRect(coords.x, coords.y, imageSize.width, imageSize.height);
 
-	imageRect.origin.y++;
-	
-	if (highlighted)
-		[self.alternateImage drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+    imageRect.origin.y++;
+
+    if (highlighted)
+        [self.alternateImage drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
 
     else
-		[self.image drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+        [self.image drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
 }
 
 
 #pragma mark - Mouse Events
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	isMouseDown = YES;
+    isMouseDown = YES;
 
-	[self setNeedsDisplay];
+    [self setNeedsDisplay];
 }
 
 
 - (void)mouseUp:(NSEvent *)event {
-	if (!isMouseDown)
-		return;
+    if (!isMouseDown)
+        return;
 
-	if ((event.modifierFlags & NSAlternateKeyMask) > 0) {
-		if ([self.delegate respondsToSelector:@selector(statusItemViewDidAltClick:)])
-			[self.delegate statusItemViewDidAltClick:self];
-	}
-	else if ([self.delegate respondsToSelector:@selector(statusItemViewDidClick:)])
+    if ((event.modifierFlags & NSAlternateKeyMask) > 0) {
+        if ([self.delegate respondsToSelector:@selector(statusItemViewDidAltClick:)])
+            [self.delegate statusItemViewDidAltClick:self];
+    }
+    else if ([self.delegate respondsToSelector:@selector(statusItemViewDidClick:)])
         [self.delegate statusItemViewDidClick:self];
 
-	isMouseDown = NO;
+    isMouseDown = NO;
 
-	[self setNeedsDisplay];
+    [self setNeedsDisplay];
 }
 
 
 - (void)rightMouseDown:(NSEvent *)theEvent {
-	isMouseDown = YES;
+    isMouseDown = YES;
 
-	[self setNeedsDisplay];
+    [self setNeedsDisplay];
 }
 
 
 - (void)rightMouseUp:(NSEvent *)event {
-	if (!isMouseDown)
-		return;
+    if (!isMouseDown)
+        return;
 
-	if ((event.modifierFlags & NSAlternateKeyMask) > 0) {
-		if ([self.delegate respondsToSelector:@selector(statusItemViewDidRightAltClick:)])
-			[self.delegate statusItemViewDidRightAltClick:self];
-	}
-	else if ([self.delegate respondsToSelector:@selector(statusItemViewDidRightClick:)])
+    if ((event.modifierFlags & NSAlternateKeyMask) > 0) {
+        if ([self.delegate respondsToSelector:@selector(statusItemViewDidRightAltClick:)])
+            [self.delegate statusItemViewDidRightAltClick:self];
+    }
+    else if ([self.delegate respondsToSelector:@selector(statusItemViewDidRightClick:)])
         [self.delegate statusItemViewDidRightClick:self];
 
-	isMouseDown = NO;
+    isMouseDown = NO;
 
-	[self setNeedsDisplay];
+    [self setNeedsDisplay];
 }
 
 
 #pragma mark - Menu
 
 - (void)popUpMenu:(NSMenu *)menu {
-	if (menu) {
-		[NSNotificationCenter.defaultCenter addObserver:self selector:@selector(menuWillOpen:) name:NSMenuDidBeginTrackingNotification object:menu];
-		[NSNotificationCenter.defaultCenter addObserver:self selector:@selector(menuDidClose:) name:NSMenuDidEndTrackingNotification object:menu];
-		
-		[self.statusItem popUpStatusItemMenu:menu];
-	}
+    if (menu) {
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(menuWillOpen:) name:NSMenuDidBeginTrackingNotification object:menu];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(menuDidClose:) name:NSMenuDidEndTrackingNotification object:menu];
+
+        [self.statusItem popUpStatusItemMenu:menu];
+    }
 }
 
 
 #pragma mark - Notifications
 
 - (void)menuWillOpen:(NSNotification *)notification {
-	isMenuVisible = YES;
+    isMenuVisible = YES;
 
-	[self setNeedsDisplay];
+    [self setNeedsDisplay];
 
     [NSNotificationCenter.defaultCenter removeObserver:self name:NSMenuDidBeginTrackingNotification object:notification.object];
 }
 
 
 - (void)menuDidClose:(NSNotification *)notification {
-	isMenuVisible = NO;
+    isMenuVisible = NO;
 
-	[self setNeedsDisplay];
+    [self setNeedsDisplay];
 
-	[NSNotificationCenter.defaultCenter removeObserver:self name:NSMenuDidEndTrackingNotification object:notification.object];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:NSMenuDidEndTrackingNotification object:notification.object];
 }
 
 

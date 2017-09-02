@@ -60,7 +60,7 @@
 #pragma mark - Public Methods
 
 - (NSString *)description {
-	return self.store.description;
+    return self.store.description;
 }
 
 
@@ -68,49 +68,49 @@
     if (!symbol)
         return;
 
-	if (self.store.count >= 50)		// These symbols are for extra needs
-		[self.store removeLastObject];
+    if (self.store.count >= 50)        // These symbols are for extra needs
+        [self.store removeLastObject];
 
-	[self.store insertObject:symbol atIndex:0];
+    [self.store insertObject:symbol atIndex:0];
 }
 
 
 - (void)backspace {
-	if (self.store.count >= 1)
-		[self.store removeObjectAtIndex:0];
+    if (self.store.count >= 1)
+        [self.store removeObjectAtIndex:0];
 }
 
 
 - (NSString *)symbolAtIndex:(NSUInteger)index {
-	if (index >= self.store.count)
-		return nil;
+    if (index >= self.store.count)
+        return nil;
 
-	return self.store[index];
+    return self.store[index];
 }
 
 
 - (NSString *)symbols:(NSUInteger)count {
-	NSEnumerator * enumerator = self.store.reverseObjectEnumerator;
-	NSMutableString * result = NSMutableString.string;
-	NSString * letter = nil;
+    NSEnumerator * enumerator = self.store.reverseObjectEnumerator;
+    NSMutableString * result = NSMutableString.string;
+    NSString * letter = nil;
 
-	while ((letter = enumerator.nextObject))
-		[result appendString:letter];
+    while ((letter = enumerator.nextObject))
+        [result appendString:letter];
 
-	NSInteger index = result.length - count;
-	index = index > 0 ? index : 0;
+    NSInteger index = result.length - count;
+    index = index > 0 ? index : 0;
 
-	return [result substringFromIndex:index];
+    return [result substringFromIndex:index];
 }
 
 
 - (void)invalidate {
-	[self.store removeAllObjects];
+    [self.store removeAllObjects];
 }
 
 
 - (NSUInteger)count {
-	return self.store.count;
+    return self.store.count;
 }
 
 
@@ -118,13 +118,13 @@
 
 + (instancetype)keyStore {
     static MKKeyStore * keyStore = nil;
-	static dispatch_once_t pred;
-	
-	dispatch_once(&pred, ^{
-		keyStore = [[MKKeyStore alloc] init];
-	});
+    static dispatch_once_t pred;
 
-	return keyStore;
+    dispatch_once(&pred, ^{
+        keyStore = [[MKKeyStore alloc] init];
+    });
+
+    return keyStore;
 }
 
 

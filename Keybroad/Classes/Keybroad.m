@@ -73,39 +73,39 @@
 #pragma mark- init & dealloc
 
 - (instancetype)init {
-	if ((self = [super init])) {
-		self.hidManager = [[[MKHIDManager alloc] init] autorelease];
-		self.hidManager.delegate = self;
-		lastProcessId = -1;
-		isProcess = NO;
+    if ((self = [super init])) {
+        self.hidManager = [[[MKHIDManager alloc] init] autorelease];
+        self.hidManager.delegate = self;
+        lastProcessId = -1;
+        isProcess = NO;
 
-		self.keyboardHandler = [NSEvent addGlobalMonitorForEventsMatchingMask:(NSKeyDownMask) handler:^(NSEvent * event){
-			[self handleEvent:event];
-		}];
+        self.keyboardHandler = [NSEvent addGlobalMonitorForEventsMatchingMask:(NSKeyDownMask) handler:^(NSEvent * event){
+            [self handleEvent:event];
+        }];
 
-		self.mouseHandler = [NSEvent addGlobalMonitorForEventsMatchingMask:(NSEventMask)NSLeftMouseUp handler:^(NSEvent * event) {
-			if (SETTINGS.active)
-				[KEYSTORE invalidate];
-		}];
+        self.mouseHandler = [NSEvent addGlobalMonitorForEventsMatchingMask:(NSEventMask)NSLeftMouseUp handler:^(NSEvent * event) {
+            if (SETTINGS.active)
+                [KEYSTORE invalidate];
+        }];
 
-		LAYOUT.delegate = self;
+        LAYOUT.delegate = self;
 
         [self updateCaps];
-	}
+    }
 
-	return self;
+    return self;
 }
 
 
 - (void)dealloc {
-	LAYOUT.delegate = nil;
-	self.hidManager.delegate = nil;
+    LAYOUT.delegate = nil;
+    self.hidManager.delegate = nil;
     self.hidManager = nil;
 
-	[NSEvent removeMonitor:keyboardHandler];
-	[NSEvent removeMonitor:mouseHandler];
-	[keyboardHandler release];
-	[super dealloc];
+    [NSEvent removeMonitor:keyboardHandler];
+    [NSEvent removeMonitor:mouseHandler];
+    [keyboardHandler release];
+    [super dealloc];
 }
 
 
@@ -119,32 +119,32 @@
 #pragma mark - Public Methods
 
 - (void)sendKeyCode:(NSInteger)keycode withModifiers:(UInt32)modifiers {
-	CGEventRef event = CGEventCreateKeyboardEvent(NULL, (CGKeyCode)keycode, true);
+    CGEventRef event = CGEventCreateKeyboardEvent(NULL, (CGKeyCode)keycode, true);
 
-	CGEventSetFlags(event, modifiers);
-	CGEventPost(kCGSessionEventTap, event);
-	CFRelease(event);
+    CGEventSetFlags(event, modifiers);
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
 
-	event = CGEventCreateKeyboardEvent(NULL, (CGKeyCode)keycode, false);
+    event = CGEventCreateKeyboardEvent(NULL, (CGKeyCode)keycode, false);
 
-	CGEventSetFlags(event, modifiers);
-	CGEventPost(kCGSessionEventTap, event);
-	CFRelease(event);
+    CGEventSetFlags(event, modifiers);
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
 }
 
 
 - (void)sendText:(UniChar *)text length:(NSUInteger)length {
-	CGEventRef event = CGEventCreateKeyboardEvent(NULL, 0, true);
+    CGEventRef event = CGEventCreateKeyboardEvent(NULL, 0, true);
 
-	CGEventKeyboardSetUnicodeString(event, length, text);
-	CGEventPost(kCGSessionEventTap, event);
-	CFRelease(event);
+    CGEventKeyboardSetUnicodeString(event, length, text);
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
 }
 
 
 - (void)backspace:(NSUInteger)count {
-	for (int i = 0; i < count; i++) 
-		[self sendKeyCode:51 withModifiers:0];
+    for (int i = 0; i < count; i++) 
+        [self sendKeyCode:51 withModifiers:0];
 }
 
 
@@ -152,33 +152,33 @@
 
 - (void)typoSelectedText {
     NSString * before = [SHARED_APP frontmostTopElementText:YES];
-    
+
     if (!before || before.length < 1)
         return;
-    
+
     NSString * after = [PRESETS apply:before fromStart:NO];
-    
+
     if (!after || after.length < 1)
         return;
-    
+
     NSUInteger aLength = after.length;
-    
+
     UniChar chars[aLength];
     memset(chars, 0, sizeof(chars));
-    
+
     [after getBytes:chars maxLength:(aLength * sizeof(UniChar)) usedLength:NULL encoding:NSUTF16StringEncoding options:0 range:NSMakeRange(0, aLength) remainingRange:NULL];
     [self backspace:1];
-    
+
     NSUInteger step = 16;
     NSUInteger steps = (aLength / step);
     NSUInteger rest = aLength - (steps * step);
     int i = 0;
-    
+
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25f, NO);
-    
+
     for (; i < aLength - rest; i+=step)
         [self sendText:&chars[i] length:step];
-    
+
     if (rest > 0)
         [self sendText:&chars[i] length:rest];
 }
@@ -186,15 +186,15 @@
 
 - (void)onFrontmostAppChanged {
     [self updateCaps];
-    
+
     ASYNCH_MAINTHREAD_AFTER(0.125f, ^{
         [self updateCaps];
     });
-    
+
     ASYNCH_MAINTHREAD_AFTER(0.25f, ^{
         [self updateCaps];
     });
-    
+
     ASYNCH_MAINTHREAD_AFTER(0.5f, ^{
         [self updateCaps];
     });
@@ -204,64 +204,64 @@
 #pragma mark - Private Methods
 
 - (BOOL)validSymbol:(NSString *)symbol {
-	UniChar ch = [symbol characterAtIndex:0];
+    UniChar ch = [symbol characterAtIndex:0];
 
-	switch (ch) {
-		case 0x20:						//  
-		case 0x2E:						// .
-		case 0x3A:						// :
-		case 0x3B:						// ;
-		case 0x2C:						// ,
-		case 0x21:						// !
-		case 0x3F:						// ?
-			return NO;
-			
-		default:
-			break;
-	}
+    switch (ch) {
+        case 0x20:                        //  
+        case 0x2E:                        // .
+        case 0x3A:                        // :
+        case 0x3B:                        // ;
+        case 0x2C:                        // ,
+        case 0x21:                        // !
+        case 0x3F:                        // ?
+            return NO;
+            
+        default:
+            break;
+    }
 
-	return YES;
+    return YES;
 }
 
 
 - (BOOL)stopSymbol:(UniChar)symbol {
-	switch (symbol) {
-		//case 0x7F:					// Backspace
-		case 0xF728:					// Delete
-		case 0x09:						// Tab
-		case 0xF700:					// ↑
-		case 0xF701:					// ↓
-		case 0xF702:					// ←
-		case 0xF703:					// →
-		case 0xF729:					// Home
-		case 0xF72B:					// End
-		case 0xF72C:					// Page Down
-		case 0xF72D:					// Page Up
-		//case 0x0D:						// Enter
-		case 0x1B:						// Escape
-			return NO;
-			
-		default:
-			break;
-	}
+    switch (symbol) {
+        //case 0x7F:                    // Backspace
+        case 0xF728:                    // Delete
+        case 0x09:                        // Tab
+        case 0xF700:                    // ↑
+        case 0xF701:                    // ↓
+        case 0xF702:                    // ←
+        case 0xF703:                    // →
+        case 0xF729:                    // Home
+        case 0xF72B:                    // End
+        case 0xF72C:                    // Page Down
+        case 0xF72D:                    // Page Up
+        //case 0x0D:                        // Enter
+        case 0x1B:                        // Escape
+            return NO;
 
-	return YES;
+        default:
+            break;
+    }
+
+    return YES;
 }
 
 
 #pragma mark - MKHIDManagerDelegate
 
 - (void)hidManagerDidPressCapsLock:(MKHIDManager *)hidManager {
-	if (SETTINGS.useCaps) {
+    if (SETTINGS.useCaps) {
         BOOL currentCapsState = [LAYOUT.currentLayoutId isEqualToString:SETTINGS.layoutForCapsOn];
         BOOL capsState = !currentCapsState;
 
-		NSString * newLayoutId = capsState ? SETTINGS.layoutForCapsOn : SETTINGS.layoutForCapsOff;
+        NSString * newLayoutId = capsState ? SETTINGS.layoutForCapsOn : SETTINGS.layoutForCapsOff;
 
-		[LAYOUT setLayout:newLayoutId];
+        [LAYOUT setLayout:newLayoutId];
 
-		self.hidManager.capsState = capsState;
-	}
+        self.hidManager.capsState = capsState;
+    }
 }
 
 
@@ -275,93 +275,93 @@
 #pragma mark - Event Handler
 
 - (void)handleEvent:(NSEvent *)event {
-	if (!SETTINGS.active || [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID])
-		return;
-	
-	@synchronized (self) {
-		NSInteger processId = SHARED_APP.frontmostProcessID;
-		UniChar ch = [event.characters characterAtIndex:0];
-		NSUInteger modifiers = [event modifierFlags];
-		BOOL fromStart = (ch == 0x0D);
+    if (!SETTINGS.active || [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID])
+        return;
 
-		if (fromStart)
-			[KEYSTORE invalidate];
+    @synchronized (self) {
+        NSInteger processId = SHARED_APP.frontmostProcessID;
+        UniChar ch = [event.characters characterAtIndex:0];
+        NSUInteger modifiers = [event modifierFlags];
+        BOOL fromStart = (ch == 0x0D);
 
-		if (modifiers & NX_COMMANDMASK && modifiers & NX_CONTROLMASK && event.keyCode == 17) {// Cmd + Ctrl + T
-			[self typoSelectedText];
+        if (fromStart)
+            [KEYSTORE invalidate];
 
-			return;
-		}
+        if (modifiers & NX_COMMANDMASK && modifiers & NX_CONTROLMASK && event.keyCode == 17) {// Cmd + Ctrl + T
+            [self typoSelectedText];
 
-		if (processId != 0 && processId == lastProcessId) {
-			if (modifiers & NX_COMMANDMASK)
-				[KEYSTORE invalidate];
+            return;
+        }
 
-			else if (ch == 0x7F) {
-				if (modifiers & NX_ALTERNATEMASK)
-					[KEYSTORE invalidate];
+        if (processId != 0 && processId == lastProcessId) {
+            if (modifiers & NX_COMMANDMASK)
+                [KEYSTORE invalidate];
 
-				else
-					[KEYSTORE backspace];
-			}
-			else if ([self stopSymbol:ch]) {
-				[KEYSTORE addSymbol:event.characters];
-				[self doKeyboard:fromStart];
-			}
-			else
-				[KEYSTORE invalidate];
-		}
-		else
-			[KEYSTORE invalidate];
+            else if (ch == 0x7F) {
+                if (modifiers & NX_ALTERNATEMASK)
+                    [KEYSTORE invalidate];
 
-		lastProcessId = processId;
-	}
+                else
+                    [KEYSTORE backspace];
+            }
+            else if ([self stopSymbol:ch]) {
+                [KEYSTORE addSymbol:event.characters];
+                [self doKeyboard:fromStart];
+            }
+            else
+                [KEYSTORE invalidate];
+        }
+        else
+            [KEYSTORE invalidate];
+
+        lastProcessId = processId;
+    }
 }
 
 
 - (void)doKeyboard:(BOOL)fromStart {
-	if (isProcess)
-		return;
+    if (isProcess)
+        return;
 
-	isProcess = YES;
-	NSString * before = [KEYSTORE symbols:SYMBOLS_IN_STORE];
+    isProcess = YES;
+    NSString * before = [KEYSTORE symbols:SYMBOLS_IN_STORE];
 
-	if (![PRESETS check:before fromStart:fromStart]) {
-		isProcess = NO;
-
-		return;
-	}
-
-	NSString * after = [PRESETS apply:before fromStart:fromStart];
-
-	if ([before isEqualToString:after] || (before.length < 1 || after.length < 1)) {
-		isProcess = NO;
+    if (![PRESETS check:before fromStart:fromStart]) {
+        isProcess = NO;
 
         return;
-	}
+    }
 
-	while (before.length > 0 && after.length > 0 && [before characterAtIndex:0] == [after characterAtIndex:0]) {
-		before = [before substringFromIndex:1];
-		after = [after substringFromIndex:1];
-	}
+    NSString * after = [PRESETS apply:before fromStart:fromStart];
 
-	NSUInteger aLength = after.length;
+    if ([before isEqualToString:after] || (before.length < 1 || after.length < 1)) {
+        isProcess = NO;
 
-	[self backspace:before.length];
-	[KEYSTORE invalidate];
+        return;
+    }
 
-	UniChar chars[aLength];
+    while (before.length > 0 && after.length > 0 && [before characterAtIndex:0] == [after characterAtIndex:0]) {
+        before = [before substringFromIndex:1];
+        after = [after substringFromIndex:1];
+    }
 
-	[after getBytes:chars maxLength:(aLength * sizeof(UniChar)) usedLength:NULL encoding:NSUTF16StringEncoding options:0 range:NSMakeRange(0, aLength) remainingRange:NULL];
-	[self sendText:chars length:aLength];
+    NSUInteger aLength = after.length;
 
-	for (int i = 0; i < aLength; i++)
-		[KEYSTORE addSymbol:[after substringWithRange:NSMakeRange(i, 1)]];
+    [self backspace:before.length];
+    [KEYSTORE invalidate];
 
-	for (int i = 0; i < before.length; i++)
-		[KEYSTORE addSymbol:@"~"];
+    UniChar chars[aLength];
 
-	isProcess = NO;
+    [after getBytes:chars maxLength:(aLength * sizeof(UniChar)) usedLength:NULL encoding:NSUTF16StringEncoding options:0 range:NSMakeRange(0, aLength) remainingRange:NULL];
+    [self sendText:chars length:aLength];
+
+    for (int i = 0; i < aLength; i++)
+        [KEYSTORE addSymbol:[after substringWithRange:NSMakeRange(i, 1)]];
+
+    for (int i = 0; i < before.length; i++)
+        [KEYSTORE addSymbol:@"~"];
+
+    isProcess = NO;
 }
 
 

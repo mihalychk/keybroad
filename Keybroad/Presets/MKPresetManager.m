@@ -69,26 +69,26 @@
 - (void)loadPresets {
     NSMutableArray * array = NSMutableArray.array;
 
-	NSArray * dirFiles = [NSFileManager.defaultManager contentsOfDirectoryAtPath:NSBundle.mainBundle.resourcePath error:nil];
-	NSArray * list = [dirFiles filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self ENDSWITH '-preset.plist'"]];
+    NSArray * dirFiles = [NSFileManager.defaultManager contentsOfDirectoryAtPath:NSBundle.mainBundle.resourcePath error:nil];
+    NSArray * list = [dirFiles filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self ENDSWITH '-preset.plist'"]];
 
-	for (NSString * path in list) {
-		NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    for (NSString * path in list) {
+        NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-		MKPreset * preset = [[[MKPreset alloc] initWithPresetName:[path stringByReplacingOccurrencesOfString:@"-preset.plist" withString:@""]] autorelease];
-		
-		if (preset && [LAYOUT matchLayouts:preset.layouts])
-			[array addObject:preset];
+        MKPreset * preset = [[[MKPreset alloc] initWithPresetName:[path stringByReplacingOccurrencesOfString:@"-preset.plist" withString:@""]] autorelease];
+        
+        if (preset && [LAYOUT matchLayouts:preset.layouts])
+            [array addObject:preset];
 
-		[pool drain];
-	}
+        [pool drain];
+    }
 
-	[array sortUsingComparator:^NSComparisonResult(id a, id b) {
-		NSUInteger first = ((MKPreset *)a).order;
-		NSUInteger second = ((MKPreset *)b).order;
+    [array sortUsingComparator:^NSComparisonResult(id a, id b) {
+        NSUInteger first = ((MKPreset *)a).order;
+        NSUInteger second = ((MKPreset *)b).order;
 
-		return first < second ? NSOrderedAscending : (first == second ? NSOrderedSame : NSOrderedDescending);
-	}];
+        return first < second ? NSOrderedAscending : (first == second ? NSOrderedSame : NSOrderedDescending);
+    }];
 
     self.presets = [NSArray arrayWithArray:array];
 }
@@ -97,25 +97,25 @@
 #pragma mark - Public Methods
 
 - (BOOL)check:(NSString *)source fromStart:(BOOL)fromStart {
-	for (MKPreset * preset in self.presets)
-		if (preset.active && [preset check:source fromStart:fromStart])
-			return YES;
+    for (MKPreset * preset in self.presets)
+        if (preset.active && [preset check:source fromStart:fromStart])
+            return YES;
 
-	return NO;
+    return NO;
 }
 
 
 - (NSString *)apply:(NSString *)source fromStart:(BOOL)fromStart {
-	self.result = source;
-	
-	for (MKPreset * preset in self.presets)
-		if (preset.active)
-			self.result = [preset apply:result fromStart:fromStart];
-	
-	NSString * res = [[result retain] autorelease];
-	self.result = nil;
-	
-	return res;
+    self.result = source;
+
+    for (MKPreset * preset in self.presets)
+        if (preset.active)
+            self.result = [preset apply:result fromStart:fromStart];
+
+    NSString * res = [[result retain] autorelease];
+    self.result = nil;
+
+    return res;
 }
 
 
@@ -123,13 +123,13 @@
 
 + (instancetype)sharedManager {
     static MKPresetManager * sharedManager = nil;
-	static dispatch_once_t pred;
-	
-	dispatch_once(&pred, ^{
-		sharedManager = [[MKPresetManager alloc] init];
-	});
+    static dispatch_once_t pred;
 
-	return sharedManager;
+    dispatch_once(&pred, ^{
+        sharedManager = [[MKPresetManager alloc] init];
+    });
+
+    return sharedManager;
 }
 
 

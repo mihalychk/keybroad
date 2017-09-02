@@ -56,13 +56,13 @@
 #pragma mark - init & dealloc
 
 - (instancetype)initWithPresetName:(NSString *)name {
-	if ((self = [super init])) {
-		self.name = name;
+    if ((self = [super init])) {
+        self.name = name;
 
         [self reload];
-	}
+    }
 
-	return self;
+    return self;
 }
 
 
@@ -73,7 +73,7 @@
     self.result = nil;
     self.preset = nil;
 
-	[super	dealloc];
+    [super    dealloc];
 }
 
 
@@ -82,120 +82,120 @@
 #define PRESET_FILENAME [NSBundle.mainBundle pathForResource:FORMAT(@"%@-preset", self.name) ofType:@"plist"]
 
 - (void)reload {
-	self.preset = [NSDictionary dictionaryWithContentsOfFile:PRESET_FILENAME];
-	NSMutableArray * rules = NSMutableArray.array;
-	active = [SETTINGS boolForKey:FORMAT(@"preset_%@", self.name)];
-	
-	for (NSDictionary * rule in self.preset[@"Rules"]) {
-		NSError * error = NULL;
-		NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:rule[@"Rule"] options:(rule[@"Case Sensitive"] && [rule[@"Case Sensitive"] integerValue] == 1) ? 0 : NSRegularExpressionCaseInsensitive error:&error];
+    self.preset = [NSDictionary dictionaryWithContentsOfFile:PRESET_FILENAME];
+    NSMutableArray * rules = NSMutableArray.array;
+    active = [SETTINGS boolForKey:FORMAT(@"preset_%@", self.name)];
 
-		if (!error) {
-			NSMutableDictionary * dict = NSMutableDictionary.dictionary;
+    for (NSDictionary * rule in self.preset[@"Rules"]) {
+        NSError * error = NULL;
+        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:rule[@"Rule"] options:(rule[@"Case Sensitive"] && [rule[@"Case Sensitive"] integerValue] == 1) ? 0 : NSRegularExpressionCaseInsensitive error:&error];
+
+        if (!error) {
+            NSMutableDictionary * dict = NSMutableDictionary.dictionary;
 
             if (regex)
                 dict[@"Regex"] = regex;
-			
-			if (rule[@"Layouts"])
+
+            if (rule[@"Layouts"])
                 dict[@"Layouts"] = rule[@"Layouts"];
-			
-			if (rule[@"Transform"])
-				dict[@"Transform"] = rule[@"Transform"];
 
-			if (rule[@"Replacement"])
-				dict[@"Replacement"] = rule[@"Replacement"];
+            if (rule[@"Transform"])
+                dict[@"Transform"] = rule[@"Transform"];
 
-			if (rule[@"FromLineStart"])
-				dict[@"FromLineStart"] = rule[@"FromLineStart"];
+            if (rule[@"Replacement"])
+                dict[@"Replacement"] = rule[@"Replacement"];
 
-			[rules addObject:dict];
-		}
-	}
+            if (rule[@"FromLineStart"])
+                dict[@"FromLineStart"] = rule[@"FromLineStart"];
+
+            [rules addObject:dict];
+        }
+    }
 
     self.rules = [NSArray arrayWithArray:rules];
 }
 
 
 - (NSString *)description {
-	return FORMAT(@"%@", self.preset);
+    return FORMAT(@"%@", self.preset);
 }
 
 
 - (BOOL)match:(NSArray *)layouts {
-	if (!layouts)
-		return NO;
+    if (!layouts)
+        return NO;
 
-	return [layouts indexOfObject:LAYOUT.currentLayout];
+    return [layouts indexOfObject:LAYOUT.currentLayout];
 }
 
 
 - (NSString *)apply:(NSString *)source fromStart:(BOOL)fromStart {
-	self.result = source;
+    self.result = source;
 
-	for (NSDictionary * rule in self.rules) {
-		if ([self match:rule[@"Layouts"]])
-			continue;
+    for (NSDictionary * rule in self.rules) {
+        if ([self match:rule[@"Layouts"]])
+            continue;
 
-		if ([rule[@"FromLineStart"] integerValue] == 1 && !fromStart)
-			continue;
+        if ([rule[@"FromLineStart"] integerValue] == 1 && !fromStart)
+            continue;
 
-		NSRegularExpression * regex = rule[@"Regex"];
-		self.result = [regex stringByReplacingMatchesInString:self.result options:0 range:NSMakeRange(0, self.result.length) withTemplate:rule[@"Replacement"]];
-		NSString * transform = rule[@"Transform"];
+        NSRegularExpression * regex = rule[@"Regex"];
+        self.result = [regex stringByReplacingMatchesInString:self.result options:0 range:NSMakeRange(0, self.result.length) withTemplate:rule[@"Replacement"]];
+        NSString * transform = rule[@"Transform"];
 
-		if (transform) {
-			NSRange range = [regex rangeOfFirstMatchInString:self.result options:0 range:NSMakeRange(0, self.result.length)];
+        if (transform) {
+            NSRange range = [regex rangeOfFirstMatchInString:self.result options:0 range:NSMakeRange(0, self.result.length)];
 
-			if (range.length > 0 && range.location != NSNotFound) {
-				self.temp = [self.result substringWithRange:range];
+            if (range.length > 0 && range.location != NSNotFound) {
+                self.temp = [self.result substringWithRange:range];
 
-				if ([transform isEqualToString:@"uppercase"])
-					self.temp = self.temp.uppercaseString;
+                if ([transform isEqualToString:@"uppercase"])
+                    self.temp = self.temp.uppercaseString;
 
-				if ([transform isEqualToString:@"lowercase"])
-					self.temp = self.temp.lowercaseString;
+                if ([transform isEqualToString:@"lowercase"])
+                    self.temp = self.temp.lowercaseString;
 
-				self.result = [self.result stringByReplacingOccurrencesOfString:[self.result substringWithRange:range] withString:self.temp];
-				self.temp = nil;
-			}
-		}
-	}
+                self.result = [self.result stringByReplacingOccurrencesOfString:[self.result substringWithRange:range] withString:self.temp];
+                self.temp = nil;
+            }
+        }
+    }
 
-	NSString * output = [[self.result copy] autorelease];
-	self.result = nil;
+    NSString * output = [[self.result copy] autorelease];
+    self.result = nil;
 
-	return output;
+    return output;
 }
 
 
 - (BOOL)check:(NSString *)source fromStart:(BOOL)fromStart {
-	for (NSDictionary * rule in self.rules) {
-		if ([self match:rule[@"Layouts"]])
-			continue;
-		
-		if ([rule[@"FromLineStart"] integerValue] == 1 && !fromStart)
-			continue;
+    for (NSDictionary * rule in self.rules) {
+        if ([self match:rule[@"Layouts"]])
+            continue;
 
-		if ([rule[@"Regex"] numberOfMatchesInString:source options:0 range:NSMakeRange(0, source.length)] > 0)
-			return YES;
-	}
+        if ([rule[@"FromLineStart"] integerValue] == 1 && !fromStart)
+            continue;
 
-	return NO;
+        if ([rule[@"Regex"] numberOfMatchesInString:source options:0 range:NSMakeRange(0, source.length)] > 0)
+            return YES;
+    }
+
+    return NO;
 }
 
 
 - (NSString *)title {
-	return self.preset[@"Title"];
+    return self.preset[@"Title"];
 }
 
 
 - (NSString *)group {
-	return self.preset[@"Group"];
+    return self.preset[@"Group"];
 }
 
 
 - (NSUInteger)order {
-	return self.preset[@"Order"] ? [self.preset[@"Order"] integerValue] : NSUIntegerMax;
+    return self.preset[@"Order"] ? [self.preset[@"Order"] integerValue] : NSUIntegerMax;
 }
 
 
@@ -205,15 +205,15 @@
 
 
 - (BOOL)hidden {
-	return self.preset[@"Hidden"] ? ([self.preset[@"Hidden"] integerValue] == 1) : NO;
+    return self.preset[@"Hidden"] ? ([self.preset[@"Hidden"] integerValue] == 1) : NO;
 }
 
 
 - (void)setActive:(BOOL)value {
-	active = value;
+    active = value;
 
-	[SETTINGS setBool:active forKey:FORMAT(@"preset_%@", self.name)];
-	[self reload];
+    [SETTINGS setBool:active forKey:FORMAT(@"preset_%@", self.name)];
+    [self reload];
 }
 
 

@@ -52,38 +52,38 @@
 #pragma mark - Helpers
 
 - (NSString *)currentLayoutName {
-	TISInputSourceRef sourceRef = TISCopyCurrentKeyboardInputSource();
-	NSString * result = [NSString stringWithString:(NSString *)TISGetInputSourceProperty(sourceRef, kTISPropertyLocalizedName)];
-	
+    TISInputSourceRef sourceRef = TISCopyCurrentKeyboardInputSource();
+    NSString * result = [NSString stringWithString:(NSString *)TISGetInputSourceProperty(sourceRef, kTISPropertyLocalizedName)];
+
     // I don't know why the fuck it is leaking here
 
     CFRelease(sourceRef);
-	
-	return result;
+
+    return result;
 }
 
 
 - (NSString *)currentLayoutId {
-	TISInputSourceRef sourceRef = TISCopyCurrentKeyboardInputSource();
+    TISInputSourceRef sourceRef = TISCopyCurrentKeyboardInputSource();
     NSString * result = [NSString stringWithString:TISGetInputSourceProperty(sourceRef, kTISPropertyInputSourceID)];
 
     // I don't know why the fuck it is leaking here
 
     CFRelease(sourceRef);
 
-	return result;
+    return result;
 }
 
 
 - (NSString *)currentLayout {
-	TISInputSourceRef sourceRef = TISCopyCurrentKeyboardInputSource();
-	NSString * result = [NSString stringWithString:(NSString *)[(NSArray *)TISGetInputSourceProperty(sourceRef, kTISPropertyInputSourceLanguages) objectAtIndex:0]];
-	
+    TISInputSourceRef sourceRef = TISCopyCurrentKeyboardInputSource();
+    NSString * result = [NSString stringWithString:(NSString *)[(NSArray *)TISGetInputSourceProperty(sourceRef, kTISPropertyInputSourceLanguages) objectAtIndex:0]];
+
     // I don't know why the fuck it is leaking here
 
     CFRelease(sourceRef);
-	
-	return result;
+
+    return result;
 }
 
 
@@ -98,36 +98,36 @@
 
 
 - (BOOL)matchLayouts:(NSArray *)layouts {
-	if (!IS_ARRAY_1(layouts))  // If no layout specified, rule works for any layout
-		return YES;
-	
-	for (NSString * layout in layouts)
+    if (!IS_ARRAY_1(layouts))  // If no layout specified, rule works for any layout
+        return YES;
+
+    for (NSString * layout in layouts)
         if (IS_STRING_1(layout) && [self.layoutsSet containsObject:layout.lowercaseString])
             return YES;
-	
-	return NO;
+
+    return NO;
 }
 
 
 #pragma mark - subinit & deinit
 
 - (void)subInit {
-	self.layoutsSet = NSMutableSet.set;
+    self.layoutsSet = NSMutableSet.set;
     NSArray * sourceArray = self.sourceList;
 
-	for (int i = 0; i < sourceArray.count; i++) {
-		TISInputSourceRef ref = (TISInputSourceRef)sourceArray[i];
-		NSString * layoutType = TISGetInputSourceProperty(ref, kTISPropertyInputSourceType);
+    for (int i = 0; i < sourceArray.count; i++) {
+        TISInputSourceRef ref = (TISInputSourceRef)sourceArray[i];
+        NSString * layoutType = TISGetInputSourceProperty(ref, kTISPropertyInputSourceType);
 
-		if ([layoutType isEqualToString:@"TISTypeKeyboardLayout"]) {
-			NSArray<NSString *> * layout = TISGetInputSourceProperty(ref, kTISPropertyInputSourceLanguages);
+        if ([layoutType isEqualToString:@"TISTypeKeyboardLayout"]) {
+            NSArray<NSString *> * layout = TISGetInputSourceProperty(ref, kTISPropertyInputSourceLanguages);
 
             if (IS_ARRAY_1(layout) && IS_STRING_1(layout[0]))
                 [self.layoutsSet addObject:[NSString stringWithString:layout[0].lowercaseString]];
-		}
-	}
+        }
+    }
 
-	center = CFNotificationCenterGetDistributedCenter();
+    center = CFNotificationCenterGetDistributedCenter();
 
     if (center) {
         CFNotificationCenterAddObserver(center, self, onLayoutChange, kTISNotifySelectedKeyboardInputSourceChanged, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
@@ -153,60 +153,60 @@
 - (void)dealloc {
     self.delegate = nil;
 
-	[self deInit];
-	[super dealloc];
+    [self deInit];
+    [super dealloc];
 }
 
 
 #pragma mark -
 
 - (NSArray *)layouts {
-	NSMutableArray * layoutsArray = NSMutableArray.array;
-	NSArray * sourceArray = self.sourceList;
-	
-	for (int i = 0; i < sourceArray.count; i++) {
-		TISInputSourceRef ref = (TISInputSourceRef)sourceArray[i];
-		NSString * layoutType = TISGetInputSourceProperty(ref, kTISPropertyInputSourceType);
-		
-		if ([layoutType isEqualToString:@"TISTypeKeyboardLayout"]) {
-			NSString * layoutName = TISGetInputSourceProperty(ref, kTISPropertyLocalizedName);
-			NSString * layoutId = TISGetInputSourceProperty(ref, kTISPropertyInputSourceID);
-			NSImage * layoutImage = [[[NSImage alloc] initWithIconRef:TISGetInputSourceProperty(ref, kTISPropertyIconRef)] autorelease];
-			
-			for (NSImageRep * rep in layoutImage.representations)
-				if (rep.size.width > 16)
-					[layoutImage removeRepresentation:rep];
-			
-			[layoutsArray addObject:@{@"id": layoutId, @"title": layoutName, @"image": layoutImage}];
-		}
+    NSMutableArray * layoutsArray = NSMutableArray.array;
+    NSArray * sourceArray = self.sourceList;
 
-		[layoutType release];
-	}
+    for (int i = 0; i < sourceArray.count; i++) {
+        TISInputSourceRef ref = (TISInputSourceRef)sourceArray[i];
+        NSString * layoutType = TISGetInputSourceProperty(ref, kTISPropertyInputSourceType);
 
-	return layoutsArray;
+        if ([layoutType isEqualToString:@"TISTypeKeyboardLayout"]) {
+            NSString * layoutName = TISGetInputSourceProperty(ref, kTISPropertyLocalizedName);
+            NSString * layoutId = TISGetInputSourceProperty(ref, kTISPropertyInputSourceID);
+            NSImage * layoutImage = [[[NSImage alloc] initWithIconRef:TISGetInputSourceProperty(ref, kTISPropertyIconRef)] autorelease];
+
+            for (NSImageRep * rep in layoutImage.representations)
+                if (rep.size.width > 16)
+                    [layoutImage removeRepresentation:rep];
+
+            [layoutsArray addObject:@{@"id": layoutId, @"title": layoutName, @"image": layoutImage}];
+        }
+
+        [layoutType release];
+    }
+
+    return layoutsArray;
 }
 
 
 - (void)setLayout:(NSString *)targetLayoutId {
     capsLockPressed = YES;
 
-	NSArray * sourceArray = self.sourceList;
+    NSArray * sourceArray = self.sourceList;
 
-	for (NSUInteger i = 0; i < sourceArray.count; i++) {
-		TISInputSourceRef ref = (TISInputSourceRef)sourceArray[i];
-		
-		NSString * layoutType = TISGetInputSourceProperty(ref, kTISPropertyInputSourceType);
-		
-		if ([layoutType isEqualToString:@"TISTypeKeyboardLayout"]) {
-			NSString * layoutId = TISGetInputSourceProperty(ref, kTISPropertyInputSourceID);
+    for (NSUInteger i = 0; i < sourceArray.count; i++) {
+        TISInputSourceRef ref = (TISInputSourceRef)sourceArray[i];
 
-			if ([layoutId isEqualToString:targetLayoutId]) {
-				TISSelectInputSource(ref);
+        NSString * layoutType = TISGetInputSourceProperty(ref, kTISPropertyInputSourceType);
+
+        if ([layoutType isEqualToString:@"TISTypeKeyboardLayout"]) {
+            NSString * layoutId = TISGetInputSourceProperty(ref, kTISPropertyInputSourceID);
+
+            if ([layoutId isEqualToString:targetLayoutId]) {
+                TISSelectInputSource(ref);
 
                 break;
-			}
-		}
-	}
+            }
+        }
+    }
 }
 
 
@@ -223,17 +223,17 @@
 #pragma mark -
 
 void onLayoutChange(CFNotificationCenterRef center, void * observer, CFStringRef name, const void * object, CFDictionaryRef userInfo) {
-	MKLayout * layout = (MKLayout *)observer;
+    MKLayout * layout = (MKLayout *)observer;
 
-	[layout onLayoutChange];
+    [layout onLayoutChange];
 }
 
 
 void onLayoutsCountChange(CFNotificationCenterRef center, void * observer, CFStringRef name, const void * object, CFDictionaryRef userInfo) {
     MKLayout * layout = (MKLayout *)observer;
 
-	[layout deInit];
-	[layout subInit];
+    [layout deInit];
+    [layout subInit];
 }
 
 
@@ -241,15 +241,15 @@ void onLayoutsCountChange(CFNotificationCenterRef center, void * observer, CFStr
 
 + (instancetype)layout {
     static MKLayout * layout = nil;
-	static dispatch_once_t pred;
-	
-	dispatch_once(&pred, ^{
-		layout = [[MKLayout alloc] init];
+    static dispatch_once_t pred;
 
-		[layout subInit];
-	});
+    dispatch_once(&pred, ^{
+        layout = [[MKLayout alloc] init];
 
-	return layout;
+        [layout subInit];
+    });
+
+    return layout;
 }
 
 

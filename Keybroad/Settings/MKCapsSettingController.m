@@ -46,25 +46,25 @@
 #pragma mark - init & dealloc
 
 - (instancetype)initWithCallback:(MKCapsSettingCallback)callback {
-	if ((self = [super init])) {
-		self.complete = callback;
-		self.window = [[MKCapsSettingWindow alloc] initWithCallback:^{
-			self.window = nil;
+    if ((self = [super init])) {
+        self.complete = callback;
+        self.window = [[MKCapsSettingWindow alloc] initWithCallback:^{
+            self.window = nil;
 
-			if (self.complete)
-				self.complete();
-		}];
+            if (self.complete)
+                self.complete();
+        }];
 
-		self.window.layouts = LAYOUT.layouts;
-		self.window.useCaps = SETTINGS.useCaps;
+        self.window.layouts = LAYOUT.layouts;
+        self.window.useCaps = SETTINGS.useCaps;
 
-		[self.window setCapsOnLayout:SETTINGS.layoutForCapsOn];
-		[self.window setCapsOffLayout:SETTINGS.layoutForCapsOff];
+        [self.window setCapsOnLayout:SETTINGS.layoutForCapsOn];
+        [self.window setCapsOffLayout:SETTINGS.layoutForCapsOff];
 
-		self.window.delegate = self;     // IMPORTANT!!!
-	}
+        self.window.delegate = self;     // IMPORTANT!!!
+    }
 
-	return self;
+    return self;
 }
 
 
@@ -72,25 +72,25 @@
     self.complete = nil;
     self.window = nil;
 
-	[super dealloc];
+    [super dealloc];
 }
 
 
 #pragma mark -
 
 - (void)settingWindow:(MKCapsSettingWindow *)window didSwitchUseState:(BOOL)state {
-	SETTINGS.useCaps = state;
+    SETTINGS.useCaps = state;
 }
 
 
 - (void)settingWindow:(MKCapsSettingWindow *)window didSelectIndex:(NSInteger)index forCapsState:(BOOL)state {
-	NSString * value = self.window.layouts[index][@"id"];
+    NSString * value = self.window.layouts[index][@"id"];
 
-	if (state)
-		SETTINGS.layoutForCapsOn = value;
+    if (state)
+        SETTINGS.layoutForCapsOn = value;
 
-	else
-		SETTINGS.layoutForCapsOff = value;
+    else
+        SETTINGS.layoutForCapsOff = value;
 }
 
 

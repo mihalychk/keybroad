@@ -45,51 +45,51 @@
 #pragma mark - init & dealloc
 
 - (instancetype)init {
-	if ((self = [super init])) {
-		if (!MKSystemSettingsController.check) {
-			NSUInteger major, minor, bugFix	= 0;
-			
-			[SETTINGS systemVersionMajor:&major minor:&minor bugFix:&bugFix];
+    if ((self = [super init])) {
+        if (!MKSystemSettingsController.check) {
+            NSUInteger major, minor, bugFix    = 0;
 
-			BOOL newFashion = (major == 10 && minor > 8);
+            [SETTINGS systemVersionMajor:&major minor:&minor bugFix:&bugFix];
 
-			ProcessSerialNumber psn = { 0, kCurrentProcess };
-			TransformProcessType(&psn, kProcessTransformToForegroundApplication);
-			SetFrontProcess(&psn);
+            BOOL newFashion = (major == 10 && minor > 8);
 
-			self.window = [[MKSystemSettingWindow alloc] initWithNewStyle:newFashion andCallback:^(BOOL onSettings) {
+            ProcessSerialNumber psn = { 0, kCurrentProcess };
+            TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+            SetFrontProcess(&psn);
+
+            self.window = [[MKSystemSettingWindow alloc] initWithNewStyle:newFashion andCallback:^(BOOL onSettings) {
                 self.window = nil;
 
-				if (onSettings) {
-					NSLog(@"System Preferences");
+                if (onSettings) {
+                    NSLog(@"System Preferences");
 
-					if (newFashion)
-						[NSWorkspace.sharedWorkspace openFile:@"/System/Library/PreferencePanes/Security.prefPane"];
+                    if (newFashion)
+                        [NSWorkspace.sharedWorkspace openFile:@"/System/Library/PreferencePanes/Security.prefPane"];
 
-					else
-						[NSWorkspace.sharedWorkspace openFile:@"/System/Library/PreferencePanes/UniversalAccessPref.prefPane"];
-				}
+                    else
+                        [NSWorkspace.sharedWorkspace openFile:@"/System/Library/PreferencePanes/UniversalAccessPref.prefPane"];
+                }
 
-				[NSApplication.sharedApplication terminate:nil];
-			}];
-		}
-	}
+                [NSApplication.sharedApplication terminate:nil];
+            }];
+        }
+    }
 
-	return self;
+    return self;
 }
 
 
 - (void)dealloc {
     self.window = nil;
 
-	[super dealloc];
+    [super dealloc];
 }
 
 
 #pragma mark - Static Methods
 
 + (BOOL)check {
-	return AXAPIEnabled();
+    return AXAPIEnabled();
 }
 
 

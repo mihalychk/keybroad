@@ -86,13 +86,13 @@
 #pragma mark - Properties
 
 -(void)setActive:(BOOL)value {
-	SET_BOOL(@"active", value);
+    SET_BOOL(@"active", value);
     SAVE();
 }
 
 
 -(BOOL)active {
-	return GET_BOOL(@"active");
+    return GET_BOOL(@"active");
 }
 
 
@@ -100,44 +100,44 @@
     SET_BOOL(@"useCaps", value);
     SAVE();
 
-	IOHIDManagerRef hidManager = MKHIDManager.hidManager;
+    IOHIDManagerRef hidManager = MKHIDManager.hidManager;
 
-	IOHIDManagerOpen(hidManager, kIOHIDOptionsTypeNone);
+    IOHIDManagerOpen(hidManager, kIOHIDOptionsTypeNone);
 
     CFSetRef deviceCFSetRef = IOHIDManagerCopyDevices(hidManager);
-	CFIndex deviceIndex, deviceCount = CFSetGetCount(deviceCFSetRef);
-	IOHIDDeviceRef * tIOHIDDeviceRefs = malloc(sizeof(IOHIDDeviceRef) * deviceCount);
-	
-	CFSetGetValues(deviceCFSetRef, (const void **)tIOHIDDeviceRefs);
-	CFRelease(deviceCFSetRef);
-	
-	for (deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++) {
-		if (!IOHIDDeviceConformsTo(tIOHIDDeviceRefs[deviceIndex], kHIDPage_GenericDesktop, kHIDUsage_GD_Keyboard))
-			continue;
+    CFIndex deviceIndex, deviceCount = CFSetGetCount(deviceCFSetRef);
+    IOHIDDeviceRef * tIOHIDDeviceRefs = malloc(sizeof(IOHIDDeviceRef) * deviceCount);
 
-		NSNumber * vendorId = (__bridge NSNumber *)IOHIDDeviceGetProperty(tIOHIDDeviceRefs[deviceIndex], CFSTR(kIOHIDVendorIDKey));
-		NSNumber * productId = (__bridge NSNumber *)IOHIDDeviceGetProperty(tIOHIDDeviceRefs[deviceIndex], CFSTR(kIOHIDProductIDKey));
+    CFSetGetValues(deviceCFSetRef, (const void **)tIOHIDDeviceRefs);
+    CFRelease(deviceCFSetRef);
 
-		NSString * command = nil;
+    for (deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++) {
+        if (!IOHIDDeviceConformsTo(tIOHIDDeviceRefs[deviceIndex], kHIDPage_GenericDesktop, kHIDUsage_GD_Keyboard))
+            continue;
 
-		if (value)
-			command = FORMAT(@"defaults -currentHost write -g com.apple.keyboard.modifiermapping.%@-%@-0 -array-add '%@'", vendorId, productId, CAPS_STRING);
+        NSNumber * vendorId = (__bridge NSNumber *)IOHIDDeviceGetProperty(tIOHIDDeviceRefs[deviceIndex], CFSTR(kIOHIDVendorIDKey));
+        NSNumber * productId = (__bridge NSNumber *)IOHIDDeviceGetProperty(tIOHIDDeviceRefs[deviceIndex], CFSTR(kIOHIDProductIDKey));
 
-		else
-			command = FORMAT(@"defaults -currentHost delete -g com.apple.keyboard.modifiermapping.%@-%@-0", vendorId, productId);
+        NSString * command = nil;
 
-		//NSLog(@"command: %@", command);
-		system(command.UTF8String);
-	}
-	
-	free(tIOHIDDeviceRefs);
-	IOHIDManagerClose(hidManager, kIOHIDOptionsTypeNone);
-	CFRelease(hidManager);
+        if (value)
+            command = FORMAT(@"defaults -currentHost write -g com.apple.keyboard.modifiermapping.%@-%@-0 -array-add '%@'", vendorId, productId, CAPS_STRING);
+
+        else
+            command = FORMAT(@"defaults -currentHost delete -g com.apple.keyboard.modifiermapping.%@-%@-0", vendorId, productId);
+
+        //NSLog(@"command: %@", command);
+        system(command.UTF8String);
+    }
+
+    free(tIOHIDDeviceRefs);
+    IOHIDManagerClose(hidManager, kIOHIDOptionsTypeNone);
+    CFRelease(hidManager);
 }
 
 
 -(BOOL)useCaps {
-	return GET_BOOL(@"useCaps");
+    return GET_BOOL(@"useCaps");
 }
 
 
@@ -148,7 +148,7 @@
 
 
 - (NSString *)layoutForCapsOn {
-	return GET_OBJ(@"layoutForCapsOn");
+    return GET_OBJ(@"layoutForCapsOn");
 }
 
 
@@ -159,7 +159,7 @@
 
 
 - (NSString *)layoutForCapsOff {
-	return GET_OBJ(@"layoutForCapsOff");
+    return GET_OBJ(@"layoutForCapsOff");
 }
 
 
@@ -170,96 +170,96 @@
 
 
 -(BOOL)wasInit {
-	return GET_BOOL(@"wasInit");
+    return GET_BOOL(@"wasInit");
 }
 
 
 - (BOOL)startup {
-	Boolean foundIt = false;
-	LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    Boolean foundIt = false;
+    LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
 
-	if (loginItems) {
-		UInt32 seed = 0U;
-		NSArray * currentLoginItems = [NSMakeCollectable(LSSharedFileListCopySnapshot(loginItems, &seed)) autorelease];
+    if (loginItems) {
+        UInt32 seed = 0U;
+        NSArray * currentLoginItems = [NSMakeCollectable(LSSharedFileListCopySnapshot(loginItems, &seed)) autorelease];
 
-		for (id itemObject in currentLoginItems) {
-			LSSharedFileListItemRef item = (LSSharedFileListItemRef)itemObject;
-			UInt32 resolutionFlags = kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes;
-			CFURLRef URL = NULL;
-			OSStatus err = LSSharedFileListItemResolve(item, resolutionFlags, &URL, NULL);
+        for (id itemObject in currentLoginItems) {
+            LSSharedFileListItemRef item = (LSSharedFileListItemRef)itemObject;
+            UInt32 resolutionFlags = kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes;
+            CFURLRef URL = NULL;
+            OSStatus err = LSSharedFileListItemResolve(item, resolutionFlags, &URL, NULL);
 
-			if (err == noErr) {
-				foundIt = CFEqual(URL, APPLICATION_PATH);
+            if (err == noErr) {
+                foundIt = CFEqual(URL, APPLICATION_PATH);
 
-				CFRelease(URL);
-				
-				if (foundIt)
-					break;
+                CFRelease(URL);
+                
+                if (foundIt)
+                    break;
 
-			}
-		}
-		CFRelease(loginItems);
-	}
+            }
+        }
+        CFRelease(loginItems);
+    }
 
-	return (BOOL)foundIt;
+    return (BOOL)foundIt;
 }
 
 
 - (void)setStartup:(BOOL)enabled {
-	LSSharedFileListItemRef existingItem = NULL;
-	LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    LSSharedFileListItemRef existingItem = NULL;
+    LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
 
-	if (loginItems) {
-		UInt32 seed = 0U;
-		NSArray * currentLoginItems = [NSMakeCollectable(LSSharedFileListCopySnapshot(loginItems, &seed)) autorelease];
+    if (loginItems) {
+        UInt32 seed = 0U;
+        NSArray * currentLoginItems = [NSMakeCollectable(LSSharedFileListCopySnapshot(loginItems, &seed)) autorelease];
 
-		for (id itemObject in currentLoginItems) {
-			LSSharedFileListItemRef item = (LSSharedFileListItemRef)itemObject;
-			UInt32 resolutionFlags = kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes;
-			CFURLRef URL = NULL;
-			OSStatus err = LSSharedFileListItemResolve(item, resolutionFlags, &URL, NULL);
+        for (id itemObject in currentLoginItems) {
+            LSSharedFileListItemRef item = (LSSharedFileListItemRef)itemObject;
+            UInt32 resolutionFlags = kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes;
+            CFURLRef URL = NULL;
+            OSStatus err = LSSharedFileListItemResolve(item, resolutionFlags, &URL, NULL);
 
-			if (err == noErr) {
-				Boolean foundIt = CFEqual(URL, APPLICATION_PATH);
+            if (err == noErr) {
+                Boolean foundIt = CFEqual(URL, APPLICATION_PATH);
 
                 CFRelease(URL);
-				
-				if (foundIt) {
-					existingItem = item;
+                
+                if (foundIt) {
+                    existingItem = item;
 
-					break;
-				}
-			}
-		}
-		
-		if (enabled && (existingItem == NULL))
-			LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, (CFURLRef)APPLICATION_PATH, NULL, NULL);
+                    break;
+                }
+            }
+        }
 
-		else if (!enabled && (existingItem != NULL))
-			LSSharedFileListItemRemove(loginItems, existingItem);
-		
-		CFRelease(loginItems);
-	}
+        if (enabled && (existingItem == NULL))
+            LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, (CFURLRef)APPLICATION_PATH, NULL, NULL);
+
+        else if (!enabled && (existingItem != NULL))
+            LSSharedFileListItemRemove(loginItems, existingItem);
+
+        CFRelease(loginItems);
+    }
 }
 
 
 #pragma mark - Public Methods
 
 - (void)systemVersionMajor:(NSUInteger *)major minor:(NSUInteger *)minor bugFix:(NSUInteger *)bugFix {
-	NSString * versionString = [NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"][@"ProductVersion"];
-	NSArray * versions = [versionString componentsSeparatedByString:@"."];
-	*major = 0;
-	*minor = 0;
-	*bugFix = 0;
-	
-	if (versions.count >= 1)
-		*major = [versions[0] integerValue];
-	
-	if (versions.count >= 2)
-		*minor = [versions[1] integerValue];
-	
-	if (versions.count >= 3)
-		*bugFix = [versions[1] integerValue];
+    NSString * versionString = [NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"][@"ProductVersion"];
+    NSArray * versions = [versionString componentsSeparatedByString:@"."];
+    *major = 0;
+    *minor = 0;
+    *bugFix = 0;
+
+    if (versions.count >= 1)
+        *major = [versions[0] integerValue];
+
+    if (versions.count >= 2)
+        *minor = [versions[1] integerValue];
+
+    if (versions.count >= 3)
+        *bugFix = [versions[1] integerValue];
 }
 
 
@@ -283,18 +283,18 @@
 
 
 - (BOOL)boolForKey:(NSString *)key {
-	return GET_BOOL(key);
+    return GET_BOOL(key);
 }
 
 
 - (void)addExcludeApp:(NSString *)bundleId {
-	if (!bundleId || bundleId.length < 1)
-		return;
+    if (!bundleId || bundleId.length < 1)
+        return;
 
-	if ([self.excludedApps indexOfObject:bundleId] != NSNotFound)
-		return;
+    if ([self.excludedApps indexOfObject:bundleId] != NSNotFound)
+        return;
 
-	[self.excludedApps addObject:bundleId];
+    [self.excludedApps addObject:bundleId];
 
     SET_OBJ(@"excluded", self.excludedApps);
     SAVE();
@@ -302,13 +302,13 @@
 
 
 - (void)removeExcludeApp:(NSString *)bundleId {
-	if (!bundleId || bundleId.length < 1)
-		return;
-	
-	if ([self.excludedApps indexOfObject:bundleId] == NSNotFound)
-		return;
+    if (!bundleId || bundleId.length < 1)
+        return;
 
-	[self.excludedApps removeObject:bundleId];
+    if ([self.excludedApps indexOfObject:bundleId] == NSNotFound)
+        return;
+
+    [self.excludedApps removeObject:bundleId];
 
     SET_OBJ(@"excluded", self.excludedApps);
     SAVE();
@@ -316,7 +316,7 @@
 
 
 - (BOOL)isExcluded:(NSString *)bundleId {
-	return [self.excludedApps indexOfObject:bundleId] != NSNotFound;
+    return [self.excludedApps indexOfObject:bundleId] != NSNotFound;
 }
 
 
@@ -324,13 +324,13 @@
 
 + (instancetype)sharedSettings {
     static MKSettings * settings = nil;
-	static dispatch_once_t pred;
-	
-	dispatch_once(&pred, ^{
-		settings = [[MKSettings alloc] init];
-	});
+    static dispatch_once_t pred;
 
-	return settings;
+    dispatch_once(&pred, ^{
+        settings = [[MKSettings alloc] init];
+    });
+
+    return settings;
 }
 
 
