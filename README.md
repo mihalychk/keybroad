@@ -10,20 +10,20 @@ You've already seen KB's key feature on your iPhone and iPad: press the `SPAC
 
 Besides that helpful shortcut for `DOT+SPACE`, Keybroad automatically inserts special symbols and corrects punctuations as you type, so your texts look cleaner and more professional:
 
-Input  | | Output
----—-- | --------------------------------------- | ---
-`--`   | Two hyphens                             | `—` (em dash)
-` - `  | Hyphen surrounded by spaces             | ` — ` (unbreakable space + em dash + space)
-`(c)`  |                                         | `©`
-`(r)`  |                                         | `®`
-`(tm)` |                                         | `™`
-`+-`   |                                         | `±`
-`/=`   | Also works as `\=`                      | `≠`
-`->`   |                                         | `→`
-`<-`   |                                         | `←`
-`|^`   | Also works as `^|`                      | `↑`
-`2-1`  | Hyphen surrounded by any two digits     | `2−1` (minus sign added)
-`1x2`  | letter `x` surrounded by any two digits | `1×2` (multiplication sign added)
+| Input  |                                         | Output
+|:---—--:|:--------------------------------------- |:---
+| `--`   | Two hyphens                             | `—` (em dash)
+| ` - `  | Hyphen surrounded by spaces             | ` — ` (unbreakable space + em dash + space)
+| `(c)`  |                                         | `©`
+| `(r)`  |                                         | `®`
+| `(tm)` |                                         | `™`
+| `+-`   |                                         | `±`
+| `/=`   | Also works as `\=`                      | `≠`
+| `->`   |                                         | `→`
+| `<-`   |                                         | `←`
+| `|^`   | Also works as `^|`                      | `↑`
+| `2-1`  | Hyphen surrounded by any two digits     | `2−1` (minus sign added)
+| `1x2`  | letter `x` surrounded by any two digits | `1×2` (multiplication sign added)
 
 
 ## Everywhere you need it
