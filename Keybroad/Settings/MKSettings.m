@@ -60,12 +60,12 @@
     if ((self = [super init])) {
         NSArray * settings = GET_OBJ(@"excluded");
 
-        if (IS_ARRAY_1(settings))
+        if (!IS_ARRAY_1(settings))
             self.excludedApps = [NSMutableArray arrayWithArray:settings];
         
         else {
             NSString * path = [NSBundle.mainBundle pathForResource:@"excluded" ofType:@"plist"];
-            self.excludedApps = [[NSMutableArray alloc] initWithContentsOfFile:path];
+            self.excludedApps = [[[NSMutableArray alloc] initWithContentsOfFile:path] autorelease];
 
             SET_OBJ(@"excluded", self.excludedApps);
             SAVE();
