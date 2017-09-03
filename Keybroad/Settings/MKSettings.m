@@ -60,7 +60,7 @@
     if ((self = [super init])) {
         NSArray * settings = GET_OBJ(@"excluded");
 
-        if (!IS_ARRAY_1(settings))
+        if (IS_ARRAY_1(settings))
             self.excludedApps = [NSMutableArray arrayWithArray:settings];
         
         else {
