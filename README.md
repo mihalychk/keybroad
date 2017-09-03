@@ -32,6 +32,8 @@ Besides that helpful shortcut for `DOT+SPACE`, Keybroad automatically inserts s
 | &#124;^ | Also works as ^&#124; | `↑` |
 | `2-1` | Hyphen surrounded by any two digits | `2−1` (minus sign added) |
 | `1x2` | letter `x` surrounded by any two digits | `1×2` (multiplication sign added) |
+| `31oc` | Also works as `31dc` | `31 °C` |
+| `31of` | Also works as `31df` | `31 °F` |
 
 | Cyrillic Keyboard Layout | | Output
 | --- | --- | ---
