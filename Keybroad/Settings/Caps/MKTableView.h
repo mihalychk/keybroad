@@ -22,9 +22,11 @@
 
 
 
-
 #import <Cocoa/Cocoa.h>
 
+
+
+NS_ASSUME_NONNULL_BEGIN
 
 
 
@@ -32,11 +34,10 @@
 
 
 
-
 @interface MKTableView : NSView
 
-@property (nonatomic, assign) id<MKTableViewDelegate> delegate;
-@property (nonatomic, retain) NSArray * layouts;
+@property (nonatomic, nullable, assign) id<MKTableViewDelegate> delegate;
+@property (nonatomic, nullable, retain) NSArray *layouts;
 @property (nonatomic, assign) NSInteger selectedIndex;
 @property (nonatomic, assign) BOOL enabled;
 
@@ -46,11 +47,12 @@
 
 
 
-
 @protocol MKTableViewDelegate <NSObject>
-
-@optional
 
 - (void)tableView:(MKTableView *)tableView didSelectRowAtIndex:(NSInteger)index;
 
 @end
+
+
+
+NS_ASSUME_NONNULL_END

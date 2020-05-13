@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4D081C9C1F52FB44004482B6 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DEE7C2D16BEE82F00D5E71D /* AppKit.framework */; };
+		4D20E885246C5D24005A0EC5 /* MKUI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D20E884246C5D24005A0EC5 /* MKUI.m */; };
 		4D2613D61F52EEFF0050D6A5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D2613D51F52EEFF0050D6A5 /* Images.xcassets */; };
 		4D29E19F1826D6F0000A6FCC /* MKCapsSettingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D29E19E1826D6F0000A6FCC /* MKCapsSettingWindow.m */; };
 		4D29E1A21826D82E000A6FCC /* MKCapsSettingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D29E1A11826D82E000A6FCC /* MKCapsSettingController.m */; };
@@ -26,7 +27,7 @@
 		4DD6EA5617086BA10037947E /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD6EA5417086B910037947E /* ServiceManagement.framework */; };
 		4DE5A1D1181B013000769B54 /* MKSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5A1CC181B013000769B54 /* MKSettings.m */; };
 		4DE5A1D2181B013000769B54 /* MKSystemSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5A1CE181B013000769B54 /* MKSystemSettingsController.m */; };
-		4DE5A1D3181B013000769B54 /* MKSystemSettingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5A1D0181B013000769B54 /* MKSystemSettingWindow.m */; };
+		4DE5A1D3181B013000769B54 /* MKSystemSettingsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5A1D0181B013000769B54 /* MKSystemSettingsWindow.m */; };
 		4DE5A1D9181B018000769B54 /* MKPreset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5A1D6181B018000769B54 /* MKPreset.m */; };
 		4DE5A1DA181B018000769B54 /* MKPresetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5A1D8181B018000769B54 /* MKPresetManager.m */; };
 		4DE5A1DE181B01EC00769B54 /* MKStatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5A1DD181B01EC00769B54 /* MKStatusItemView.m */; };
@@ -41,6 +42,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D20E883246C5D24005A0EC5 /* MKUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKUI.h; sourceTree = "<group>"; };
+		4D20E884246C5D24005A0EC5 /* MKUI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKUI.m; sourceTree = "<group>"; };
 		4D2397F518293021008307E0 /* MKCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKCommon.h; sourceTree = "<group>"; };
 		4D2613D51F52EEFF0050D6A5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
 		4D29E19D1826D6F0000A6FCC /* MKCapsSettingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKCapsSettingWindow.h; sourceTree = "<group>"; };
@@ -69,8 +72,8 @@
 		4DE5A1CC181B013000769B54 /* MKSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKSettings.m; sourceTree = "<group>"; };
 		4DE5A1CD181B013000769B54 /* MKSystemSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKSystemSettingsController.h; sourceTree = "<group>"; };
 		4DE5A1CE181B013000769B54 /* MKSystemSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKSystemSettingsController.m; sourceTree = "<group>"; };
-		4DE5A1CF181B013000769B54 /* MKSystemSettingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKSystemSettingWindow.h; sourceTree = "<group>"; };
-		4DE5A1D0181B013000769B54 /* MKSystemSettingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKSystemSettingWindow.m; sourceTree = "<group>"; };
+		4DE5A1CF181B013000769B54 /* MKSystemSettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKSystemSettingsWindow.h; sourceTree = "<group>"; };
+		4DE5A1D0181B013000769B54 /* MKSystemSettingsWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKSystemSettingsWindow.m; sourceTree = "<group>"; };
 		4DE5A1D5181B018000769B54 /* MKPreset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKPreset.h; sourceTree = "<group>"; };
 		4DE5A1D6181B018000769B54 /* MKPreset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKPreset.m; sourceTree = "<group>"; };
 		4DE5A1D7181B018000769B54 /* MKPresetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKPresetManager.h; sourceTree = "<group>"; };
@@ -112,6 +115,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D20E882246C5D11005A0EC5 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				4D20E883246C5D24005A0EC5 /* MKUI.h */,
+				4D20E884246C5D24005A0EC5 /* MKUI.m */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		4D873659246C52A90006ABBC /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				4DE5A1E0181B035700769B54 /* MKMenuController.h */,
+				4DE5A1E1181B035700769B54 /* MKMenuController.m */,
+				4DE5A1DC181B01EC00769B54 /* MKStatusItemView.h */,
+				4DE5A1DD181B01EC00769B54 /* MKStatusItemView.m */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		4D8C8EE6246C4FC300D18B5C /* Caps */ = {
+			isa = PBXGroup;
+			children = (
+				4D29E1A01826D82E000A6FCC /* MKCapsSettingController.h */,
+				4D29E1A11826D82E000A6FCC /* MKCapsSettingController.m */,
+				4D29E19D1826D6F0000A6FCC /* MKCapsSettingWindow.h */,
+				4D29E19E1826D6F0000A6FCC /* MKCapsSettingWindow.m */,
+				4D9C11EB182C1E86004680D7 /* MKTableView.h */,
+				4D9C11EC182C1E86004680D7 /* MKTableView.m */,
+			);
+			path = Caps;
+			sourceTree = "<group>";
+		};
+		4DA615DE246C508C0002734C /* System */ = {
+			isa = PBXGroup;
+			children = (
+				4DE5A1CD181B013000769B54 /* MKSystemSettingsController.h */,
+				4DE5A1CE181B013000769B54 /* MKSystemSettingsController.m */,
+				4DE5A1CF181B013000769B54 /* MKSystemSettingsWindow.h */,
+				4DE5A1D0181B013000769B54 /* MKSystemSettingsWindow.m */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
 		4DB6929116C292B3008838D1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -140,16 +187,10 @@
 		4DE5A1CA181B013000769B54 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				4D8C8EE6246C4FC300D18B5C /* Caps */,
+				4DA615DE246C508C0002734C /* System */,
 				4DE5A1CB181B013000769B54 /* MKSettings.h */,
 				4DE5A1CC181B013000769B54 /* MKSettings.m */,
-				4DE5A1CF181B013000769B54 /* MKSystemSettingWindow.h */,
-				4DE5A1D0181B013000769B54 /* MKSystemSettingWindow.m */,
-				4DE5A1CD181B013000769B54 /* MKSystemSettingsController.h */,
-				4DE5A1CE181B013000769B54 /* MKSystemSettingsController.m */,
-				4D29E19D1826D6F0000A6FCC /* MKCapsSettingWindow.h */,
-				4D29E19E1826D6F0000A6FCC /* MKCapsSettingWindow.m */,
-				4D29E1A01826D82E000A6FCC /* MKCapsSettingController.h */,
-				4D29E1A11826D82E000A6FCC /* MKCapsSettingController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -165,30 +206,11 @@
 			path = Presets;
 			sourceTree = "<group>";
 		};
-		4DE5A1DB181B01EC00769B54 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				4DE5A1DC181B01EC00769B54 /* MKStatusItemView.h */,
-				4DE5A1DD181B01EC00769B54 /* MKStatusItemView.m */,
-				4D9C11EB182C1E86004680D7 /* MKTableView.h */,
-				4D9C11EC182C1E86004680D7 /* MKTableView.m */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		4DE5A1DF181B032100769B54 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				4DE5A1E0181B035700769B54 /* MKMenuController.h */,
-				4DE5A1E1181B035700769B54 /* MKMenuController.m */,
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
 		4DEE7C1E16BEE82F00D5E71D = {
 			isa = PBXGroup;
 			children = (
 				4DEE7C3016BEE82F00D5E71D /* Keybroad */,
+				4DEE7C3116BEE82F00D5E71D /* Supporting Files */,
 				4DEE7C2916BEE82F00D5E71D /* Frameworks */,
 				4DEE7C2816BEE82F00D5E71D /* Products */,
 			);
@@ -228,16 +250,15 @@
 		4DEE7C3016BEE82F00D5E71D /* Keybroad */ = {
 			isa = PBXGroup;
 			children = (
-				4D2397F518293021008307E0 /* MKCommon.h */,
 				4DEE7C4716BEE99100D5E71D /* Classes */,
-				4DE5A1DF181B032100769B54 /* Controllers */,
+				4D20E882246C5D11005A0EC5 /* Helpers */,
+				4D873659246C52A90006ABBC /* Menu */,
 				4DE5A1D4181B018000769B54 /* Presets */,
+				4DB6929116C292B3008838D1 /* Resources */,
 				4DE5A1CA181B013000769B54 /* Settings */,
-				4DE5A1DB181B01EC00769B54 /* Views */,
+				4D2397F518293021008307E0 /* MKCommon.h */,
 				4DEE7C3C16BEE82F00D5E71D /* MKAppDelegate.h */,
 				4DEE7C3D16BEE82F00D5E71D /* MKAppDelegate.m */,
-				4DEE7C3116BEE82F00D5E71D /* Supporting Files */,
-				4DB6929116C292B3008838D1 /* Resources */,
 			);
 			path = Keybroad;
 			sourceTree = "<group>";
@@ -249,6 +270,7 @@
 				4DEE7C3616BEE82F00D5E71D /* main.m */,
 			);
 			name = "Supporting Files";
+			path = Keybroad;
 			sourceTree = "<group>";
 		};
 		4DEE7C4716BEE99100D5E71D /* Classes */ = {
@@ -295,7 +317,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = MK;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = "Mikhail Kalinin";
 				TargetAttributes = {
 					4DEE7C2616BEE82F00D5E71D = {
@@ -306,7 +328,7 @@
 			};
 			buildConfigurationList = 4DEE7C2216BEE82F00D5E71D /* Build configuration list for PBXProject "Keybroad" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -357,12 +379,13 @@
 				4DEE7C4D16BEF28900D5E71D /* MKKeyStore.m in Sources */,
 				4DE5A1DA181B018000769B54 /* MKPresetManager.m in Sources */,
 				4DE5A1DE181B01EC00769B54 /* MKStatusItemView.m in Sources */,
-				4DE5A1D3181B013000769B54 /* MKSystemSettingWindow.m in Sources */,
+				4DE5A1D3181B013000769B54 /* MKSystemSettingsWindow.m in Sources */,
 				4D9C11ED182C1E86004680D7 /* MKTableView.m in Sources */,
 				4DE5A1E2181B035700769B54 /* MKMenuController.m in Sources */,
 				4DE5A1D2181B013000769B54 /* MKSystemSettingsController.m in Sources */,
 				4D579B52170CACAE004BB705 /* MKLayout.m in Sources */,
 				4D38333C17E393EB00AB4CD7 /* MKHIDManager.m in Sources */,
+				4D20E885246C5D24005A0EC5 /* MKUI.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,16 +418,24 @@
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Mikhail Kalinin (CA7MR575YE)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -439,16 +470,24 @@
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Mikhail Kalinin (CA7MR575YE)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -472,9 +511,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = CA7MR575YE;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "Keybroad/Keybroad-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -489,9 +530,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = CA7MR575YE;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "Keybroad/Keybroad-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;

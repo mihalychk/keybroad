@@ -22,16 +22,14 @@
 
 
 
-
 #import <Cocoa/Cocoa.h>
 #import "MKAppDelegate.h"
 
 
 
-
 int main(int argc, char *argv[]) {
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    MKAppDelegate * delegate = [[[MKAppDelegate alloc] init] autorelease];
+    NSAutoreleasePool *const pool = [[NSAutoreleasePool alloc] init];
+    MKAppDelegate *const delegate = [[[MKAppDelegate alloc] init] autorelease];
 
     [NSApplication.sharedApplication setDelegate:delegate];
     [NSApplication.sharedApplication run];

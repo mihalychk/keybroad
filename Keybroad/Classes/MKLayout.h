@@ -58,8 +58,3 @@
 - (void)layoutDidChange;
 
 @end
-
-
-
-
-#define LAYOUT (MKLayout.layout)

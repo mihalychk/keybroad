@@ -37,9 +37,9 @@
 
 @interface MKMenuController () <NSMenuDelegate, MKStatusItemViewDelegate>
 
-@property (nonatomic, retain) NSStatusItem * mainMenu;
-@property (nonatomic, retain) MKCapsSettingController * capsController;
-@property (nonatomic, retain) MKStatusItemView * view;
+@property (nonatomic, nullable, retain) MKCapsSettingController *capsController;
+@property (nonatomic, retain) NSStatusItem *mainMenu;
+@property (nonatomic, retain) MKStatusItemView *view;
 
 @end
 
@@ -58,7 +58,7 @@
         self.view.delegate = self;
 
         [self.mainMenu setView:self.view];
-        [self setImages];
+        [self updateImages];
 
         [NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(themeChanged:) name:@"AppleInterfaceThemeChangedNotification" object:nil];
     }
@@ -71,8 +71,9 @@
     [NSDistributedNotificationCenter.defaultCenter removeObserver:self];
 
     self.capsController = nil;
-    self.view = nil;
-    self.mainMenu = nil;
+
+    [_view release];
+    [_mainMenu release];
 
     [super dealloc];
 }
@@ -81,33 +82,37 @@
 #pragma mark - AppleInterfaceThemeChangedNotification
 
 - (void)themeChanged:(NSNotification *)notification {
-    [self setImages];
+    [self updateImages];
 }
 
 
 #pragma mark - Public Methods
 
-- (void)setImages {
-    BOOL inactive = [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID];
-    BOOL off = !SETTINGS.active;
-    BOOL isDarkTheme = SETTINGS.currentInterfaceType == MKSettingsInterfaceTypeDark;
-    NSString * suffix = @"";
+- (void)updateImages {
+    BOOL const inactive = [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID];
+    BOOL const off = !SETTINGS.active;
+    BOOL const isDarkTheme = SETTINGS.currentInterfaceType == MKSettingsInterfaceTypeDark;
+    NSString *suffix = @"";
 
     if (off) {
-        if (inactive)
+        if (inactive) {
             suffix = @"_off_inactive";
-
-        else
+        }
+        else {
             suffix = @"_off";
+        }
     }
-    else
-        if (inactive)
+    else {
+        if (inactive) {
             suffix = isDarkTheme ? @"_inactive_alt" : @"_inactive";
+        }
+    }
 
-    if (suffix.length < 1)
+    if (suffix.length < 1) {
         suffix = isDarkTheme ? @"_alt" : @"";
+    }
 
-    NSString * imageName = FORMAT(@"%@%@", @"kb_menubar", suffix);
+    NSString *const imageName = FORMAT(@"%@%@", @"kb_menubar", suffix);
 
     self.view.image = [NSImage imageNamed:imageName];
     self.view.alternateImage = [NSImage imageNamed:FORMAT(@"kb_menubar%@_alt", inactive ? @"_inactive" : @"")];
@@ -117,12 +122,16 @@
 #pragma mark - MKStatusItemViewDelegate
 
 - (void)statusItemViewDidClick:(MKStatusItemView *)itemView {
-    [self createMenu:NO];
+    NSMenu *const menu = [self.class createMenuForTarget:self alt:NO];
+
+    [self.view popUpMenu:menu];
 }
 
 
 - (void)statusItemViewDidAltClick:(MKStatusItemView *)itemView {
-    [self createMenu:YES];
+    NSMenu *const menu = [self.class createMenuForTarget:self alt:YES];
+
+    [self.view popUpMenu:menu];
 }
 
 
@@ -131,49 +140,47 @@
 }
 
 
-- (void)statusItemViewDidRightAltClick:(MKStatusItemView *)itemView {
-    
-}
-
-
 #pragma mark - Menu
 
-- (NSMenuItem *)menuItemWithTitle:(NSString *)title action:(SEL)action checked:(BOOL)checked andHotkey:(NSString *)hotkey {
-    NSMenuItem * item = [[[NSMenuItem alloc] initWithTitle:title action:action keyEquivalent:hotkey] autorelease];
-    item.target = self;
++ (NSMenuItem *)menuItemWithTitle:(NSString *)title target:(id)target action:(SEL)action checked:(BOOL)checked andHotkey:(NSString *)hotkey {
+    NSMenuItem *const item = [[[NSMenuItem alloc] initWithTitle:title action:action keyEquivalent:hotkey] autorelease];
+    item.target = target;
     item.state = (checked) ? NSOnState : NSOffState;
 
     return item;
 }
 
 
-- (void)createMenu:(BOOL)alt {
-    NSMenu * menu = [[[NSMenu alloc] init] autorelease];
-    menu.delegate = self;
++ (NSMenu *)createMenuForTarget:(id<NSMenuDelegate>)target alt:(BOOL)alt {
+    NSMenu *const menu = [[[NSMenu alloc] init] autorelease];
+    menu.delegate = target;
 
-    BOOL isExcluded = [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID];
-    NSString * strExc = FORMAT(@"Turn KB %@ for this App", isExcluded ? @"on" : @"off");
+    BOOL const isExcluded = [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID];
+    NSString *const strExc = FORMAT(@"Turn KB %@ for this App", isExcluded ? @"on" : @"off");
 
-    [menu addItem:[self menuItemWithTitle:NSLocalizedString(@"Activate Keybroad", @"Menu") action:@selector(onToggle:) checked:SETTINGS.active andHotkey:@""]];
-    [menu addItem:[self menuItemWithTitle:NSLocalizedString(strExc, @"Menu") action:@selector(onExclude:) checked:NO andHotkey:@""]];
+    [menu addItem:[self menuItemWithTitle:NSLocalizedString(@"Activate Keybroad", @"Menu") target:target action:@selector(onToggle:) checked:SETTINGS.active andHotkey:@""]];
+    [menu addItem:[self menuItemWithTitle:NSLocalizedString(strExc, @"Menu") target:target action:@selector(onExclude:) checked:NO andHotkey:@""]];
     [menu addItem:NSMenuItem.separatorItem];
 
-    NSString * lastGr = nil;
+    NSString *lastGr = nil;
     BOOL bFirst = YES;
 
-    for (MKPreset * preset in PRESETS.presets) {
-        if (preset.hidden)
+    for (MKPreset *const preset in PRESETS.presets) {
+        if (preset.hidden) {
             continue;
+        }
 
-        NSUInteger index = [PRESETS.presets indexOfObject:preset];
-        NSMenuItem * item = [self menuItemWithTitle:NSLocalizedString(preset.title, @"Menu") action:@selector(onPreset:) checked:preset.active andHotkey:@""];
+        NSUInteger const index = [PRESETS.presets indexOfObject:preset];
+        NSMenuItem *const item = [self menuItemWithTitle:NSLocalizedString(preset.title, @"Menu") target:target action:@selector(onPreset:) checked:preset.active andHotkey:@""];
         item.tag = index;
 
-        if ((preset.group || lastGr) && ![preset.group isEqualToString:lastGr] && !bFirst)
+        if ((preset.group || lastGr) && ![preset.group isEqualToString:lastGr] && !bFirst) {
             [menu addItem:NSMenuItem.separatorItem];
+        }
 
-        if (bFirst)
+        if (bFirst) {
             bFirst = NO;
+        }
 
         lastGr = preset.group;
 
@@ -182,14 +189,15 @@
 
     [menu addItem:NSMenuItem.separatorItem];
 
-    if (LAYOUT.layouts.count > 1)
-        [menu addItem:[self menuItemWithTitle:NSLocalizedString(@"Caps Lock settings...", @"Menu") action:@selector(onCapsSettings:) checked:NO andHotkey:@""]];
+    if (MKLayout.layout.layouts.count > 1) {
+        [menu addItem:[self menuItemWithTitle:NSLocalizedString(@"Caps Lock settings...", @"Menu") target:target action:@selector(onCapsSettings:) checked:NO andHotkey:@""]];
+    }
 
-    [menu addItem:[self menuItemWithTitle:NSLocalizedString(@"Support...", @"Menu") action:@selector(onSupport:) checked:NO andHotkey:@""]];
+    [menu addItem:[self menuItemWithTitle:NSLocalizedString(@"Support...", @"Menu") target:target action:@selector(onSupport:) checked:NO andHotkey:@""]];
     [menu addItem:NSMenuItem.separatorItem];
-    [menu addItem:[self menuItemWithTitle:NSLocalizedString(@"Quit Keybroad", @"Menu") action:@selector(onQuit:) checked:NO andHotkey:@""]];
+    [menu addItem:[self menuItemWithTitle:NSLocalizedString(@"Quit Keybroad", @"Menu") target:target action:@selector(onQuit:) checked:NO andHotkey:@""]];
 
-    [(MKStatusItemView *)self.mainMenu.view popUpMenu:menu];
+    return menu;
 }
 
 
@@ -197,6 +205,7 @@
 
 - (void)onQuit:(NSMenuItem *)sender {
     NSLog(@"App quit");
+
     SETTINGS.startup = NO;
 
     [NSApplication.sharedApplication terminate:nil];
@@ -204,28 +213,32 @@
 
 
 - (void)onCapsSettings:(NSMenuItem *)sender {
-    if (!self.capsController)
-        self.capsController = [[[MKCapsSettingController alloc] initWithCallback:^{
-            self.capsController = nil;
-        }] autorelease];
+    if (!self.capsController) {
+        WEAKIFY(self);
 
-    else
+        self.capsController = [[[MKCapsSettingController alloc] initWithCallback:^{
+            selfWeakified.capsController = nil;
+        }] autorelease];
+    }
+    else {
         [NSApp activateIgnoringOtherApps:YES];
+    }
 }
 
 
 - (void)onExclude:(NSMenuItem *)sender {
-    NSString * bundleId = [SHARED_APP frontmostProcessBundleID];
-    BOOL isExcluded = [SETTINGS isExcluded:bundleId];
+    NSString *const bundleId = [SHARED_APP frontmostProcessBundleID];
+    BOOL const isExcluded = [SETTINGS isExcluded:bundleId];
 
-    if (isExcluded)
+    if (isExcluded) {
         [SETTINGS removeExcludeApp:bundleId];
-
-    else
+    }
+    else {
         [SETTINGS addExcludeApp:bundleId];
+    }
 
     [KEYSTORE invalidate];
-    [self setImages];
+    [self updateImages];
 }
 
 
@@ -233,22 +246,24 @@
     SETTINGS.active = !SETTINGS.active;
 
     [KEYSTORE invalidate];
-    [self setImages];
+    [self updateImages];
 }
 
 
 - (void)onPreset:(NSMenuItem *)sender {
-    MKPreset * preset = PRESETS.presets[sender.tag];
+    MKPreset *const preset = PRESETS.presets[sender.tag];
     preset.active = !preset.active;
-    NSString * group = preset.group;
+    NSString *const group = preset.group;
 
-    if (group && group.length > 0)
-        for (MKPreset * pres in PRESETS.presets) {
-            NSString * pGroup = pres.group;
+    if (group && group.length > 0) {
+        for (MKPreset *const aPreset in PRESETS.presets) {
+            NSString *const aGroup = aPreset.group;
 
-            if (pGroup && [pGroup isEqualToString:group] && [pres isNotEqualTo:preset])
-                pres.active = !preset.active;
+            if (aGroup && [aGroup isEqualToString:group] && [aPreset isNotEqualTo:preset]) {
+                aPreset.active = !preset.active;
+            }
         }
+    }
 
     [KEYSTORE invalidate];
 }

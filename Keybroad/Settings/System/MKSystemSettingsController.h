@@ -1,8 +1,8 @@
 //
-//  MKStatusItemView.h
+//  MKSystemSettingsController.h
 //  Keybroad
 //
-//  Created by Mikhail Kalinin on 03.02.13.
+//  Created by Mikhail Kalinin on 21.04.13.
 //  Copyright (c) 2013 Mikhail Kalinin. All rights reserved.
 //
 //  This file is part of Keybroad app.
@@ -22,38 +22,20 @@
 
 
 
-
-#import <Cocoa/Cocoa.h>
-
+#import <Foundation/Foundation.h>
 
 
 
-@protocol MKStatusItemViewDelegate;
+NS_ASSUME_NONNULL_BEGIN
 
 
 
+@interface MKSystemSettingsController : NSObject
 
-@interface MKStatusItemView : NSControl
-
-@property (nonatomic, assign) id<MKStatusItemViewDelegate> delegate;
-@property (nonatomic, retain) NSImage * image;
-@property (nonatomic, retain) NSImage * alternateImage;
-
-- (instancetype)initWithStatusBarItem:(NSStatusItem *)_statusItem;
-- (void)popUpMenu:(NSMenu *)menu;
++ (BOOL)check;
 
 @end
 
 
 
-
-@protocol MKStatusItemViewDelegate <NSObject>
-
-@optional
-
-- (void)statusItemViewDidClick:(MKStatusItemView *)itemView;
-- (void)statusItemViewDidAltClick:(MKStatusItemView *)itemView;
-- (void)statusItemViewDidRightClick:(MKStatusItemView *)itemView;
-- (void)statusItemViewDidRightAltClick:(MKStatusItemView *)itemView;
-
-@end
+NS_ASSUME_NONNULL_END

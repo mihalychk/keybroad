@@ -1,8 +1,8 @@
 //
-//  MKSystemSettingsController.h
+//  MKMenuController.h
 //  Keybroad
 //
-//  Created by Mikhail Kalinin on 21.04.13.
+//  Created by Mikhail Kalinin on 25.10.13.
 //  Copyright (c) 2013 Mikhail Kalinin. All rights reserved.
 //
 //  This file is part of Keybroad app.
@@ -22,14 +22,21 @@
 
 
 
-
 #import <Foundation/Foundation.h>
+#import "MKStatusItemView.h"
 
 
 
+NS_ASSUME_NONNULL_BEGIN
 
-@interface MKSystemSettingsController : NSObject
 
-+ (BOOL)check;
+
+@interface MKMenuController : NSObject
+
+- (void)updateImages;
 
 @end
+
+
+
+NS_ASSUME_NONNULL_END

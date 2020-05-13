@@ -125,7 +125,7 @@
     if (!layouts)
         return NO;
 
-    return [layouts indexOfObject:LAYOUT.currentLayout];
+    return [layouts indexOfObject:MKLayout.layout.currentLayout];
 }
 
 

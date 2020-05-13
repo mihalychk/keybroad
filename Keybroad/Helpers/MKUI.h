@@ -1,9 +1,9 @@
 //
-//  MKSystemSettingWindow.h
+//  MKUI.h
 //  Keybroad
 //
-//  Created by Mikhail Kalinin on 24.04.13.
-//  Copyright (c) 2013 Mikhail Kalinin. All rights reserved.
+//  Created by Mikhail Kalinin on 13.05.20.
+//  Copyright © 2020 Mikhail Kalinin. All rights reserved.
 //
 //  This file is part of Keybroad app.
 //
@@ -22,19 +22,24 @@
 
 
 
-
 #import <Cocoa/Cocoa.h>
 
 
 
-
-typedef void (^MKSystemSettingCallback)(BOOL onSettings);
-
+NS_ASSUME_NONNULL_BEGIN
 
 
 
-@interface MKSystemSettingWindow : NSObject
+@interface MKUI : NSObject
 
-- (instancetype)initWithNewStyle:(bool)newStyle andCallback:(MKSystemSettingCallback)callback;
+- (instancetype)init NS_UNAVAILABLE;
+
++ (NSButton *)buttonWithTitle:(nullable NSString *)title target:(nullable id)target action:(nullable SEL)action andRect:(NSRect)rect;
++ (NSTextView *)textViewWithFrame:(NSRect)frame;
++ (NSTextView *)textViewWithText:(NSString *)text frame:(NSRect)frame;
 
 @end
+
+
+
+NS_ASSUME_NONNULL_END

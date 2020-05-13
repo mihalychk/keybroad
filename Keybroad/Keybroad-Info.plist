@@ -33,7 +33,7 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>MKSupportURL</key>
-	<string>http://www.cadae.ru/</string>
+	<string>https://github.com/mihalychk/keybroad</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2013 Mikhail Kalinin. All rights reserved.</string>
 	<key>NSPrincipalClass</key>

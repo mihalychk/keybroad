@@ -88,7 +88,7 @@
                 [KEYSTORE invalidate];
         }];
 
-        LAYOUT.delegate = self;
+        MKLayout.layout.delegate = self;
 
         [self updateCaps];
     }
@@ -98,7 +98,8 @@
 
 
 - (void)dealloc {
-    LAYOUT.delegate = nil;
+    MKLayout.layout.delegate = nil;
+
     self.hidManager.delegate = nil;
     self.hidManager = nil;
 
@@ -112,7 +113,7 @@
 #pragma mark - Caps
 
 - (void)updateCaps {
-    self.hidManager.capsState = [SETTINGS.layoutForCapsOn isEqualToString:LAYOUT.currentLayoutId];
+    self.hidManager.capsState = [SETTINGS.layoutForCapsOn isEqualToString:MKLayout.layout.currentLayoutId];
 }
 
 
@@ -253,12 +254,12 @@
 
 - (void)hidManagerDidPressCapsLock:(MKHIDManager *)hidManager {
     if (SETTINGS.useCaps) {
-        BOOL currentCapsState = [LAYOUT.currentLayoutId isEqualToString:SETTINGS.layoutForCapsOn];
+        BOOL currentCapsState = [MKLayout.layout.currentLayoutId isEqualToString:SETTINGS.layoutForCapsOn];
         BOOL capsState = !currentCapsState;
 
         NSString * newLayoutId = capsState ? SETTINGS.layoutForCapsOn : SETTINGS.layoutForCapsOff;
 
-        [LAYOUT setLayout:newLayoutId];
+        [MKLayout.layout setLayout:newLayoutId];
 
         self.hidManager.capsState = capsState;
     }

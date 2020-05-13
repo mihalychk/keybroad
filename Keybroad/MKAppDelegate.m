@@ -35,11 +35,11 @@
 
 
 
-@interface MKAppDelegate () <MKSharedApplicationDelegate> {
-    Keybroad * keybroad;
-    MKMenuController * controller;
-    MKSystemSettingsController * settingsController;
-}
+@interface MKAppDelegate () <MKSharedApplicationDelegate>
+
+@property (nonatomic, nullable, retain) MKMenuController *controller;
+@property (nonatomic, nullable, retain) Keybroad *keybroad;
+@property (nonatomic, nullable, retain) MKSystemSettingsController *settingsController;
 
 @end
 
@@ -52,8 +52,9 @@
 #pragma mark - init & dealloc
 
 - (void)dealloc {
-    [settingsController release];
-    [keybroad release];
+    self.controller = nil;
+    self.keybroad = nil;
+    self.settingsController = nil;
 
     [super dealloc];
 }
@@ -62,20 +63,20 @@
 #pragma mark - MKSharedApplicationDelegate
 
 - (void)sharedApplicationWasChangedFrontmostProcess {
-    [keybroad onFrontmostAppChanged];
-    [controller setImages];
+    [self.keybroad onFrontmostAppChanged];
+    [self.controller updateImages];
 }
 
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    LAYOUT;
+    [MKLayout layout];
 
     if (!SETTINGS.wasInit) {
         SETTINGS.wasInit = YES;
         SETTINGS.active = YES;
-		
-        NSArray * layouts = LAYOUT.layouts;
-		
+
+        NSArray *const layouts = MKLayout.layout.layouts;
+
         if (layouts.count > 1) {
             SETTINGS.layoutForCapsOff = layouts[0][@"id"];
             SETTINGS.layoutForCapsOn = layouts[1][@"id"];
@@ -93,22 +94,20 @@
     SETTINGS.startup = YES;
 
     if (!MKSystemSettingsController.check) {
-        settingsController = [[MKSystemSettingsController alloc] init];
+        self.settingsController = [[[MKSystemSettingsController alloc] init] autorelease];
 
         return;
     }
 
-    keybroad = [[Keybroad alloc] init];
-    controller = [[MKMenuController alloc] init];
+    self.keybroad = [[[Keybroad alloc] init] autorelease];
+    self.controller = [[[MKMenuController alloc] init] autorelease];
 }
 
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [keybroad release];
-    [controller release];
-
-    keybroad = nil;
-    controller = nil;
+    self.controller = nil;
+    self.keybroad = nil;
+    self.settingsController = nil;
 }
 
 

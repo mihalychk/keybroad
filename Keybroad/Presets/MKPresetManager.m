@@ -77,7 +77,7 @@
 
         MKPreset * preset = [[[MKPreset alloc] initWithPresetName:[path stringByReplacingOccurrencesOfString:@"-preset.plist" withString:@""]] autorelease];
         
-        if (preset && [LAYOUT matchLayouts:preset.layouts])
+        if (preset && [MKLayout.layout matchLayouts:preset.layouts])
             [array addObject:preset];
 
         [pool drain];

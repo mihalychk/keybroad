@@ -240,7 +240,7 @@ void onLayoutsCountChange(CFNotificationCenterRef center, void * observer, CFStr
 #pragma mark - Singleton
 
 + (instancetype)layout {
-    static MKLayout * layout = nil;
+    static MKLayout *layout = nil;
     static dispatch_once_t pred;
 
     dispatch_once(&pred, ^{

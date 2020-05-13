@@ -22,20 +22,19 @@
 
 
 
-
+#import <Cocoa/Cocoa.h>
+#import "MKCommon.h"
 #import "MKSystemSettingsController.h"
-#import "MKSystemSettingWindow.h"
+#import "MKSystemSettingsWindow.h"
 #import "MKSettings.h"
-
 
 
 
 @interface MKSystemSettingsController ()
 
-@property (nonatomic, retain) MKSystemSettingWindow * window;
+@property (nonatomic, nullable, retain) MKSystemSettingsWindow *window;
 
 @end
-
 
 
 
@@ -47,7 +46,7 @@
 - (instancetype)init {
     if ((self = [super init])) {
         if (!MKSystemSettingsController.check) {
-            NSUInteger major, minor, bugFix    = 0;
+            NSUInteger major, minor, bugFix = 0;
 
             [SETTINGS systemVersionMajor:&major minor:&minor bugFix:&bugFix];
 
@@ -57,8 +56,10 @@
             TransformProcessType(&psn, kProcessTransformToForegroundApplication);
             SetFrontProcess(&psn);
 
-            self.window = [[MKSystemSettingWindow alloc] initWithNewStyle:newFashion andCallback:^(BOOL onSettings) {
-                self.window = nil;
+            WEAKIFY(self);
+
+            self.window = [[MKSystemSettingsWindow alloc] initWithNewStyle:newFashion andCallback:^(BOOL onSettings) {
+                selfWeakified.window = nil;
 
                 if (onSettings) {
                     NSLog(@"System Preferences");

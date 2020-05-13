@@ -1,5 +1,5 @@
 //
-//  MKCapsSettingWindow.h
+//  MKCapsSettingController.h
 //  Keybroad
 //
 //  Created by Mikhail Kalinin on 03.11.13.
@@ -22,38 +22,22 @@
 
 
 
-
-#import "MKTableView.h"
-
-
-
-
-@protocol MKCapsSettingWindowDelegate;
-typedef void (^MKCapsSettingCallback)();
+#import <Foundation/Foundation.h>
+#import "MKCapsSettingWindow.h"
 
 
 
+NS_ASSUME_NONNULL_BEGIN
 
-@interface MKCapsSettingWindow : NSObject
 
-@property (nonatomic, assign) id<MKCapsSettingWindowDelegate> delegate;
-@property (nonatomic, retain) NSArray * layouts;
-@property (nonatomic, assign) BOOL useCaps;
 
-- (instancetype)initWithCallback:(MKCapsSettingCallback)callback;
-- (void)setCapsOnLayout:(NSString *)layoutName;
-- (void)setCapsOffLayout:(NSString *)layoutName;
+@interface MKCapsSettingController : NSObject
+
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithCallback:(nullable MKCapsSettingCallback)callback NS_DESIGNATED_INITIALIZER;
 
 @end
 
 
 
-
-@protocol MKCapsSettingWindowDelegate <NSObject>
-
-@optional
-
-- (void)settingWindow:(MKCapsSettingWindow *)window didSwitchUseState:(BOOL)state;
-- (void)settingWindow:(MKCapsSettingWindow *)window didSelectIndex:(NSInteger)index forCapsState:(BOOL)state;
-
-@end
+NS_ASSUME_NONNULL_END

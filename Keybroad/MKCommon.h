@@ -118,5 +118,8 @@
 
 
 
+#define WEAKIFY(_obj_) __weak typeof(_obj_) const _obj_ ## Weakified = _obj_
+
+
 
 #endif

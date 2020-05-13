@@ -22,20 +22,17 @@
 
 
 
-
 #import "MKTableView.h"
 #import "MKCommon.h"
 
 
 
-
 @interface MKTableView () <NSTableViewDelegate, NSTableViewDataSource>
 
-@property (nonatomic, retain) NSScrollView * scrollView;
-@property (nonatomic, retain) NSTableView * tableView;
+@property (nonatomic, retain) NSScrollView *scrollView;
+@property (nonatomic, retain) NSTableView *tableView;
 
 @end
-
 
 
 
@@ -45,16 +42,17 @@
 #pragma mark - Helpers
 
 - (NSTableColumn *)columnWithTypeImage:(BOOL)type identifier:(NSString *)identifier andWidth:(CGFloat)width {
-    NSTableColumn * column = [[[NSTableColumn alloc] initWithIdentifier:identifier] autorelease];
+    NSTableColumn *const column = [[[NSTableColumn alloc] initWithIdentifier:identifier] autorelease];
     column.width = width;
     column.editable = NO;
-    
-    if (type)
-        column.dataCell = [[[NSCell alloc] initImageCell:nil] autorelease];
 
-    else
+    if (type) {
+        column.dataCell = [[[NSCell alloc] initImageCell:nil] autorelease];
+    }
+    else {
         column.dataCell = [[[NSCell alloc] initTextCell:@""] autorelease];
-    
+    }
+
     return column;
 }
 
@@ -65,7 +63,6 @@
     if ((self = [super initWithFrame:frame])) {
         self.wantsLayer = YES;
         self.layer.masksToBounds = YES;
-        self.layer.borderColor = RGBC(0.84f, 0.84f, 0.84f);
         self.layer.borderWidth = 1.0f;
 
         self.scrollView = [[[NSScrollView alloc] initWithFrame:NSZeroRect] autorelease];
@@ -73,15 +70,15 @@
         [self addSubview:self.scrollView];
 
         self.tableView = [[[NSTableView alloc] initWithFrame:NSZeroRect] autorelease];
-        NSTableColumn * imageColumn = [self columnWithTypeImage:YES identifier:@"image" andWidth:32.0f];
-        NSTableColumn * titleColumn = [self columnWithTypeImage:NO identifier:@"title" andWidth:157.0f];
+
+        NSTableColumn *const imageColumn = [self columnWithTypeImage:YES identifier:@"image" andWidth:32.0f];
+        NSTableColumn *const titleColumn = [self columnWithTypeImage:NO identifier:@"title" andWidth:157.0f];
 
         [self.tableView addTableColumn:imageColumn];
         [self.tableView addTableColumn:titleColumn];
-        
+
         self.tableView.dataSource = self;
         self.tableView.delegate = self;
-        self.tableView.backgroundColor = NSColor.whiteColor;
         self.tableView.rowHeight = 16.0f;
         self.tableView.intercellSpacing = NSMakeSize(0.0f, 10.0f);
         self.tableView.focusRingType = NSFocusRingTypeNone;
@@ -119,13 +116,15 @@
 #pragma mark - Public Methods
 
 - (void)selectNextIndex {
-    if (self.layouts.count == 1)
+    if (self.layouts.count == 1) {
         return;
+    }
 
     NSInteger index = 0;
-    
-    if (self.tableView.selectedRow < (self.layouts.count - 1))
+
+    if (self.tableView.selectedRow < (self.layouts.count - 1)) {
         index = self.tableView.selectedRow + 1;
+    }
 
     self.selectedIndex = index;
 }
@@ -133,20 +132,21 @@
 
 #pragma mark - Getters & Setters
 
-- (void)setLayouts:(NSArray *)value {
+- (void)setLayouts:(nullable NSArray *)value {
     [value retain];
     [_layouts release];
-    
+
     _layouts = value;
-    
+
     [self.tableView reloadData];
 }
 
 
 - (void)setSelectedIndex:(NSInteger)index {
-    if (index < 0 || index > (self.layouts.count - 1))
+    if (index < 0 || index > (self.layouts.count - 1)) {
         return;
-    
+    }
+
     [self.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
 }
 
@@ -162,7 +162,7 @@
 
 
 - (BOOL)enabled {
-    return [(NSControl *)self.tableView isEnabled];
+    return ((NSControl *)self.tableView).isEnabled;
 }
 
 
@@ -173,27 +173,28 @@
 }
 
 
-- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSCell * columnCell = (NSCell *)cell;
-    NSDictionary * item = self.layouts[row];
-    
-    if (columnCell.type == NSTextCellType)
-        columnCell.title = item[@"title"];
+- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
+    NSCell *const columnCell = (NSCell *)cell;
+    NSDictionary *const item = self.layouts[row];
 
-    else
+    if (columnCell.type == NSTextCellType) {
+        columnCell.title = item[@"title"];
+    }
+    else {
         columnCell.image = item[@"image"];
+    }
 }
 
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     return nil;
 }
 
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
-    if (notification.object == self.tableView)
-        if ([self.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndex:)])
-            [self.delegate tableView:self didSelectRowAtIndex:self.selectedIndex];
+    if (notification.object == self.tableView) {
+        [self.delegate tableView:self didSelectRowAtIndex:self.selectedIndex];
+    }
 }
 
 

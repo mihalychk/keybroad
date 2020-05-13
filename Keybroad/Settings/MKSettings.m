@@ -44,7 +44,7 @@
 
 @interface MKSettings()
 
-@property (nonatomic, retain) NSMutableArray * excludedApps;
+@property (nonatomic, retain) NSMutableArray *excludedApps;
 
 @end
 
@@ -58,11 +58,11 @@
 
 - (instancetype)init {
     if ((self = [super init])) {
-        NSArray * settings = GET_OBJ(@"excluded");
+        NSArray *const settings = GET_OBJ(@"excluded");
 
-        if (IS_ARRAY_1(settings))
+        if (IS_ARRAY_1(settings)) {
             self.excludedApps = [NSMutableArray arrayWithArray:settings];
-        
+        }
         else {
             NSString * path = [NSBundle.mainBundle pathForResource:@"excluded" ofType:@"plist"];
             self.excludedApps = [[[NSMutableArray alloc] initWithContentsOfFile:path] autorelease];
@@ -100,25 +100,26 @@
     SET_BOOL(@"useCaps", value);
     SAVE();
 
-    IOHIDManagerRef hidManager = MKHIDManager.hidManager;
+    IOHIDManagerRef const hidManager = MKHIDManager.hidManager;
 
     IOHIDManagerOpen(hidManager, kIOHIDOptionsTypeNone);
 
-    CFSetRef deviceCFSetRef = IOHIDManagerCopyDevices(hidManager);
-    CFIndex deviceIndex, deviceCount = CFSetGetCount(deviceCFSetRef);
-    IOHIDDeviceRef * tIOHIDDeviceRefs = malloc(sizeof(IOHIDDeviceRef) * deviceCount);
+    CFSetRef const deviceCFSetRef = IOHIDManagerCopyDevices(hidManager);
+    CFIndex const deviceCount = CFSetGetCount(deviceCFSetRef);
+    IOHIDDeviceRef *const tIOHIDDeviceRefs = malloc(sizeof(IOHIDDeviceRef) * deviceCount);
 
     CFSetGetValues(deviceCFSetRef, (const void **)tIOHIDDeviceRefs);
     CFRelease(deviceCFSetRef);
 
-    for (deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++) {
-        if (!IOHIDDeviceConformsTo(tIOHIDDeviceRefs[deviceIndex], kHIDPage_GenericDesktop, kHIDUsage_GD_Keyboard))
+    for (CFIndex deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++) {
+        if (!IOHIDDeviceConformsTo(tIOHIDDeviceRefs[deviceIndex], kHIDPage_GenericDesktop, kHIDUsage_GD_Keyboard)) {
             continue;
+        }
 
-        NSNumber * vendorId = (__bridge NSNumber *)IOHIDDeviceGetProperty(tIOHIDDeviceRefs[deviceIndex], CFSTR(kIOHIDVendorIDKey));
-        NSNumber * productId = (__bridge NSNumber *)IOHIDDeviceGetProperty(tIOHIDDeviceRefs[deviceIndex], CFSTR(kIOHIDProductIDKey));
+        NSNumber *const vendorId = (__bridge NSNumber *)IOHIDDeviceGetProperty(tIOHIDDeviceRefs[deviceIndex], CFSTR(kIOHIDVendorIDKey));
+        NSNumber *const productId = (__bridge NSNumber *)IOHIDDeviceGetProperty(tIOHIDDeviceRefs[deviceIndex], CFSTR(kIOHIDProductIDKey));
 
-        NSString * command = nil;
+        NSString *command = nil;
 
         if (value)
             command = FORMAT(@"defaults -currentHost write -g com.apple.keyboard.modifiermapping.%@-%@-0 -array-add '%@'", vendorId, productId, CAPS_STRING);

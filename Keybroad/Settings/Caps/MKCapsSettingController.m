@@ -22,21 +22,19 @@
 
 
 
-
+#import "MKCommon.h"
 #import "MKCapsSettingController.h"
 #import "MKLayout.h"
 #import "MKSettings.h"
 
 
 
-
 @interface MKCapsSettingController () <MKCapsSettingWindowDelegate>
 
-@property (nonatomic, retain) MKCapsSettingWindow * window;
-@property (nonatomic, copy) MKCapsSettingCallback complete;
+@property (nonatomic, nullable, copy) MKCapsSettingCallback complete;
+@property (nonatomic, nullable, retain) MKCapsSettingWindow *window;
 
 @end
-
 
 
 
@@ -45,17 +43,20 @@
 
 #pragma mark - init & dealloc
 
-- (instancetype)initWithCallback:(MKCapsSettingCallback)callback {
+- (instancetype)initWithCallback:(nullable MKCapsSettingCallback)callback {
     if ((self = [super init])) {
         self.complete = callback;
-        self.window = [[MKCapsSettingWindow alloc] initWithCallback:^{
-            self.window = nil;
 
-            if (self.complete)
-                self.complete();
+        WEAKIFY(self);
+
+        self.window = [[MKCapsSettingWindow alloc] initWithCallback:^{
+            selfWeakified.window = nil;
+
+            if (selfWeakified.complete)
+                selfWeakified.complete();
         }];
 
-        self.window.layouts = LAYOUT.layouts;
+        self.window.layouts = MKLayout.layout.layouts;
         self.window.useCaps = SETTINGS.useCaps;
 
         [self.window setCapsOnLayout:SETTINGS.layoutForCapsOn];
@@ -84,13 +85,14 @@
 
 
 - (void)settingWindow:(MKCapsSettingWindow *)window didSelectIndex:(NSInteger)index forCapsState:(BOOL)state {
-    NSString * value = self.window.layouts[index][@"id"];
+    NSString *const value = self.window.layouts[index][@"id"];
 
-    if (state)
+    if (state) {
         SETTINGS.layoutForCapsOn = value;
-
-    else
+    }
+    else {
         SETTINGS.layoutForCapsOff = value;
+    }
 }
 
 

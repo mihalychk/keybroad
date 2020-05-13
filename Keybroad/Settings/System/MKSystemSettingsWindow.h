@@ -1,8 +1,8 @@
 //
-//  MKMenuController.h
+//  MKSystemSettingsWindow.h
 //  Keybroad
 //
-//  Created by Mikhail Kalinin on 25.10.13.
+//  Created by Mikhail Kalinin on 24.04.13.
 //  Copyright (c) 2013 Mikhail Kalinin. All rights reserved.
 //
 //  This file is part of Keybroad app.
@@ -22,14 +22,25 @@
 
 
 
-
-#import "MKStatusItemView.h"
-
+#import <Foundation/Foundation.h>
 
 
 
-@interface MKMenuController : NSObject
+NS_ASSUME_NONNULL_BEGIN
 
-- (void)setImages;
+
+
+typedef void (^MKSystemSettingsCallback)(BOOL onSettings);
+
+
+
+@interface MKSystemSettingsWindow : NSObject
+
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithNewStyle:(BOOL)newStyle andCallback:(nullable MKSystemSettingsCallback)callback NS_DESIGNATED_INITIALIZER;
 
 @end
+
+
+
+NS_ASSUME_NONNULL_END
