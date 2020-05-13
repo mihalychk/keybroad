@@ -31,11 +31,6 @@
 
 
 
-#define GET_BOOL(key)           [NSUserDefaults.standardUserDefaults boolForKey:key]
-#define SET_BOOL(key,value)     [NSUserDefaults.standardUserDefaults setBool:value forKey:key]
-#define GET_OBJ(key)            [NSUserDefaults.standardUserDefaults objectForKey:key]
-#define SET_OBJ(key,value)      [NSUserDefaults.standardUserDefaults setObject:value forKey:key]
-#define SAVE()                  [NSUserDefaults.standardUserDefaults synchronize]
 #define APPLICATION_PATH        [NSURL fileURLWithPath:NSBundle.mainBundle.bundlePath]
 #define CAPS_STRING             @"<dict><key>HIDKeyboardModifierMappingDst</key><integer>-1</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>"
 
@@ -58,17 +53,16 @@
 
 - (instancetype)init {
     if ((self = [super init])) {
-        NSArray *const settings = GET_OBJ(@"excluded");
+        NSArray *const settings = [self objectForKey:@"excluded"];
 
         if (IS_ARRAY_1(settings)) {
             self.excludedApps = [NSMutableArray arrayWithArray:settings];
         }
         else {
-            NSString * path = [NSBundle.mainBundle pathForResource:@"excluded" ofType:@"plist"];
+            NSString *const path = [NSBundle.mainBundle pathForResource:@"excluded" ofType:@"plist"];
             self.excludedApps = [[[NSMutableArray alloc] initWithContentsOfFile:path] autorelease];
 
-            SET_OBJ(@"excluded", self.excludedApps);
-            SAVE();
+            [self saveObject:self.excludedApps forKey:@"excluded"];
         }
     }
 
@@ -86,19 +80,17 @@
 #pragma mark - Properties
 
 -(void)setActive:(BOOL)value {
-    SET_BOOL(@"active", value);
-    SAVE();
+    [self saveBool:value forKey:@"active"];
 }
 
 
 -(BOOL)active {
-    return GET_BOOL(@"active");
+    return [self boolForKey:@"active"];
 }
 
 
 -(void)setUseCaps:(BOOL)value {
-    SET_BOOL(@"useCaps", value);
-    SAVE();
+    [self saveBool:value forKey:@"useCaps"];
 
     IOHIDManagerRef const hidManager = MKHIDManager.hidManager;
 
@@ -138,40 +130,37 @@
 
 
 -(BOOL)useCaps {
-    return GET_BOOL(@"useCaps");
+    return [self boolForKey:@"useCaps"];
 }
 
 
 - (void)setLayoutForCapsOn:(NSString *)value {
-    SET_OBJ(@"layoutForCapsOn", value);
-    SAVE();
+    [self saveObject:value forKey:@"layoutForCapsOn"];
 }
 
 
 - (NSString *)layoutForCapsOn {
-    return GET_OBJ(@"layoutForCapsOn");
+    return [self objectForKey:@"layoutForCapsOn"];
 }
 
 
 - (void)setLayoutForCapsOff:(NSString *)value {
-    SET_OBJ(@"layoutForCapsOff", value);
-    SAVE();
+    [self saveObject:value forKey:@"layoutForCapsOff"];
 }
 
 
 - (NSString *)layoutForCapsOff {
-    return GET_OBJ(@"layoutForCapsOff");
+    return [self objectForKey:@"layoutForCapsOff"];
 }
 
 
 -(void)setWasInit:(BOOL)value {
-    SET_BOOL(@"wasInit", value);
-    SAVE();
+    [self saveBool:value forKey:@"wasInit"];
 }
 
 
 -(BOOL)wasInit {
-    return GET_BOOL(@"wasInit");
+    return [self boolForKey:@"wasInit"];
 }
 
 
@@ -224,7 +213,7 @@
                 Boolean foundIt = CFEqual(URL, APPLICATION_PATH);
 
                 CFRelease(URL);
-                
+
                 if (foundIt) {
                     existingItem = item;
 
@@ -277,18 +266,9 @@
 }
 
 
-- (void)setBool:(BOOL)value forKey:(NSString *)key {
-    SET_BOOL(key, value);
-    SAVE();
-}
+#pragma mark - Excluded App
 
-
-- (BOOL)boolForKey:(NSString *)key {
-    return GET_BOOL(key);
-}
-
-
-- (void)addExcludeApp:(NSString *)bundleId {
+- (void)addExcludedApp:(NSString *)bundleId {
     if (!bundleId || bundleId.length < 1)
         return;
 
@@ -296,35 +276,85 @@
         return;
 
     [self.excludedApps addObject:bundleId];
-
-    SET_OBJ(@"excluded", self.excludedApps);
-    SAVE();
+    [self saveObject:self.excludedApps forKey:@"excluded"];
 }
 
 
-- (void)removeExcludeApp:(NSString *)bundleId {
-    if (!bundleId || bundleId.length < 1)
+- (void)removeExcludedApp:(NSString *)bundleId {
+    if (![self isExcluded:bundleId]) {
         return;
-
-    if ([self.excludedApps indexOfObject:bundleId] == NSNotFound)
-        return;
+    }
 
     [self.excludedApps removeObject:bundleId];
-
-    SET_OBJ(@"excluded", self.excludedApps);
-    SAVE();
+    [self saveObject:self.excludedApps forKey:@"excluded"];
 }
 
 
 - (BOOL)isExcluded:(NSString *)bundleId {
+    if (!bundleId || bundleId.length < 1) {
+        return NO;
+    }
+
     return [self.excludedApps indexOfObject:bundleId] != NSNotFound;
+}
+
+
+#pragma mark - Common Public
+
+- (nullable id)objectForKey:(NSString *)key {
+    NSParameterAssert(key);
+
+    return [NSUserDefaults.standardUserDefaults objectForKey:key];
+}
+
+
+- (void)setObject:(nullable id)object forKey:(NSString *)key {
+    NSParameterAssert(key);
+
+    if (object) {
+        [NSUserDefaults.standardUserDefaults setObject:object forKey:key];
+    }
+    else {
+        [NSUserDefaults.standardUserDefaults removeObjectForKey:key];
+    }
+}
+
+
+- (void)saveObject:(nullable id)object forKey:(NSString *)key {
+    [self setObject:object forKey:key];
+    [self saveSettings];
+}
+
+
+- (BOOL)boolForKey:(NSString *)key {
+    NSParameterAssert(key);
+
+    return [NSUserDefaults.standardUserDefaults boolForKey:key];
+}
+
+
+- (void)setBool:(BOOL)value forKey:(NSString *)key {
+    NSParameterAssert(key);
+
+    [NSUserDefaults.standardUserDefaults setBool:value forKey:key];
+}
+
+
+- (void)saveBool:(BOOL)value forKey:(NSString *)key {
+    [self setBool:value forKey:key];
+    [self saveSettings];
+}
+
+
+- (void)saveSettings {
+    [NSUserDefaults.standardUserDefaults synchronize];
 }
 
 
 #pragma mark - Singleton
 
 + (instancetype)sharedSettings {
-    static MKSettings * settings = nil;
+    static MKSettings *settings = nil;
     static dispatch_once_t pred;
 
     dispatch_once(&pred, ^{

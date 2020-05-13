@@ -231,10 +231,10 @@
     BOOL const isExcluded = [SETTINGS isExcluded:bundleId];
 
     if (isExcluded) {
-        [SETTINGS removeExcludeApp:bundleId];
+        [SETTINGS removeExcludedApp:bundleId];
     }
     else {
-        [SETTINGS addExcludeApp:bundleId];
+        [SETTINGS addExcludedApp:bundleId];
     }
 
     [KEYSTORE invalidate];

@@ -27,13 +27,15 @@
 
 
 
+NS_ASSUME_NONNULL_BEGIN
+
+
 
 typedef NS_ENUM(NSUInteger, MKSettingsInterfaceType) {
     MKSettingsInterfaceTypeUnknown = 0,
     MKSettingsInterfaceTypeLight,
     MKSettingsInterfaceTypeDark,
 };
-
 
 
 
@@ -50,14 +52,25 @@ typedef NS_ENUM(NSUInteger, MKSettingsInterfaceType) {
 - (void)systemVersionMajor:(NSUInteger *)major minor:(NSUInteger *)minor bugFix:(NSUInteger *)bugFix;
 - (MKSettingsInterfaceType)currentInterfaceType;
 
-- (void)setBool:(BOOL)value forKey:(NSString *)key;
-- (BOOL)boolForKey:(NSString *)key;
-
-- (void)addExcludeApp:(NSString *)bundleId;
-- (void)removeExcludeApp:(NSString *)bundleId;
+- (void)addExcludedApp:(NSString *)bundleId;
+- (void)removeExcludedApp:(NSString *)bundleId;
 - (BOOL)isExcluded:(NSString *)bundleId;
 
+- (nullable id)objectForKey:(NSString *)key;
+- (void)setObject:(nullable id)object forKey:(NSString *)key;
+- (void)saveObject:(nullable id)object forKey:(NSString *)key;
+
+- (BOOL)boolForKey:(NSString *)key;
+- (void)setBool:(BOOL)value forKey:(NSString *)key;
+- (void)saveBool:(BOOL)value forKey:(NSString *)key;
+
+- (void)saveSettings;
+
 @end
+
+
+
+NS_ASSUME_NONNULL_END
 
 
 
