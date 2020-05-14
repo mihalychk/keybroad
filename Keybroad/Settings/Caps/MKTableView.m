@@ -29,8 +29,8 @@
 
 @interface MKTableView () <NSTableViewDelegate, NSTableViewDataSource>
 
-@property (nonatomic, retain) NSScrollView *scrollView;
-@property (nonatomic, retain) NSTableView *tableView;
+@property (nonatomic, nullable, weak) NSScrollView *scrollView;
+@property (nonatomic, nullable, weak) NSTableView *tableView;
 
 @end
 
@@ -41,16 +41,16 @@
 
 #pragma mark - Helpers
 
-- (NSTableColumn *)columnWithTypeImage:(BOOL)type identifier:(NSString *)identifier andWidth:(CGFloat)width {
-    NSTableColumn *const column = [[[NSTableColumn alloc] initWithIdentifier:identifier] autorelease];
++ (NSTableColumn *)columnWithTypeImage:(BOOL)type identifier:(NSString *)identifier andWidth:(CGFloat)width {
+    __autoreleasing NSTableColumn *const column = [[NSTableColumn alloc] initWithIdentifier:identifier];
     column.width = width;
     column.editable = NO;
 
     if (type) {
-        column.dataCell = [[[NSCell alloc] initImageCell:nil] autorelease];
+        column.dataCell = [[NSCell alloc] initImageCell:nil];
     }
     else {
-        column.dataCell = [[[NSCell alloc] initTextCell:@""] autorelease];
+        column.dataCell = [[NSCell alloc] initTextCell:@""];
     }
 
     return column;
@@ -65,41 +65,34 @@
         self.layer.masksToBounds = YES;
         self.layer.borderWidth = 1.0f;
 
-        self.scrollView = [[[NSScrollView alloc] initWithFrame:NSZeroRect] autorelease];
+        NSScrollView *const scrollView = [[NSScrollView alloc] initWithFrame:NSZeroRect];
 
-        [self addSubview:self.scrollView];
+        [self addSubview:scrollView];
 
-        self.tableView = [[[NSTableView alloc] initWithFrame:NSZeroRect] autorelease];
+        self.scrollView = scrollView;
 
-        NSTableColumn *const imageColumn = [self columnWithTypeImage:YES identifier:@"image" andWidth:32.0f];
-        NSTableColumn *const titleColumn = [self columnWithTypeImage:NO identifier:@"title" andWidth:157.0f];
+        NSTableView *const tableView = [[NSTableView alloc] initWithFrame:NSZeroRect];
 
-        [self.tableView addTableColumn:imageColumn];
-        [self.tableView addTableColumn:titleColumn];
+        NSTableColumn *const imageColumn = [self.class columnWithTypeImage:YES identifier:@"image" andWidth:32.0f];
+        NSTableColumn *const titleColumn = [self.class columnWithTypeImage:NO identifier:@"title" andWidth:157.0f];
 
-        self.tableView.dataSource = self;
-        self.tableView.delegate = self;
-        self.tableView.rowHeight = 16.0f;
-        self.tableView.intercellSpacing = NSMakeSize(0.0f, 10.0f);
-        self.tableView.focusRingType = NSFocusRingTypeNone;
-        self.tableView.headerView = nil;
-        self.tableView.allowsEmptySelection = NO;
-        self.tableView.allowsMultipleSelection = NO;
+        [tableView addTableColumn:imageColumn];
+        [tableView addTableColumn:titleColumn];
 
-        self.scrollView.documentView = self.tableView;
+        tableView.dataSource = self;
+        tableView.delegate = self;
+        tableView.rowHeight = 16.0f;
+        tableView.intercellSpacing = NSMakeSize(0.0f, 10.0f);
+        tableView.focusRingType = NSFocusRingTypeNone;
+        tableView.headerView = nil;
+        tableView.allowsEmptySelection = NO;
+        tableView.allowsMultipleSelection = NO;
+
+        self.scrollView.documentView = tableView;
+        self.tableView = tableView;
     }
 
     return self;
-}
-
-
-- (void)dealloc {
-    self.delegate = nil;
-    self.layouts = nil;
-    self.scrollView = nil;
-    self.tableView = nil;
-
-    [super dealloc];
 }
 
 
@@ -133,9 +126,6 @@
 #pragma mark - Getters & Setters
 
 - (void)setLayouts:(nullable NSArray *)value {
-    [value retain];
-    [_layouts release];
-
     _layouts = value;
 
     [self.tableView reloadData];

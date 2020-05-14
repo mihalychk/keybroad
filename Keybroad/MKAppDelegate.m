@@ -25,21 +25,22 @@
 
 #import "MKAppDelegate.h"
 #import "Keybroad.h"
-#import "MKSettings.h"
 #import "MKLayout.h"
 #import "MKMenuController.h"
 #import "MKPresetManager.h"
 #import "MKSystemSettingsController.h"
 #import "MKSharedApplication.h"
+#import "MKSettings.h"
+#import "MKSystem.h"
 
 
 
 
 @interface MKAppDelegate () <MKSharedApplicationDelegate>
 
-@property (nonatomic, nullable, retain) MKMenuController *controller;
-@property (nonatomic, nullable, retain) Keybroad *keybroad;
-@property (nonatomic, nullable, retain) MKSystemSettingsController *settingsController;
+@property (nonatomic, nullable, strong) MKMenuController *controller;
+@property (nonatomic, nullable, strong) Keybroad *keybroad;
+@property (nonatomic, nullable, strong) MKSystemSettingsController *settingsController;
 
 @end
 
@@ -47,17 +48,6 @@
 
 
 @implementation MKAppDelegate
-
-
-#pragma mark - init & dealloc
-
-- (void)dealloc {
-    self.controller = nil;
-    self.keybroad = nil;
-    self.settingsController = nil;
-
-    [super dealloc];
-}
 
 
 #pragma mark - MKSharedApplicationDelegate
@@ -91,23 +81,17 @@
     PRESETS;
     SHARED_APP;
     SHARED_APP.delegate = self;
-    SETTINGS.startup = YES;
+
+    [MKSystem enableApplicationStartUp:YES];
 
     if (!MKSystemSettingsController.check) {
-        self.settingsController = [[[MKSystemSettingsController alloc] init] autorelease];
+        self.settingsController = [[MKSystemSettingsController alloc] init];
 
         return;
     }
 
-    self.keybroad = [[[Keybroad alloc] init] autorelease];
-    self.controller = [[[MKMenuController alloc] init] autorelease];
-}
-
-
-- (void)applicationWillTerminate:(NSNotification *)aNotification {
-    self.controller = nil;
-    self.keybroad = nil;
-    self.settingsController = nil;
+    self.keybroad = [[Keybroad alloc] init];
+    self.controller = [[MKMenuController alloc] init];
 }
 
 

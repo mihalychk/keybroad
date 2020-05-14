@@ -27,12 +27,13 @@
 #import "MKSystemSettingsController.h"
 #import "MKSystemSettingsWindow.h"
 #import "MKSettings.h"
+#import "MKSystem.h"
 
 
 
 @interface MKSystemSettingsController ()
 
-@property (nonatomic, nullable, retain) MKSystemSettingsWindow *window;
+@property (nonatomic, nullable, strong) MKSystemSettingsWindow *window;
 
 @end
 
@@ -48,9 +49,9 @@
         if (!MKSystemSettingsController.check) {
             NSUInteger major, minor, bugFix = 0;
 
-            [SETTINGS systemVersionMajor:&major minor:&minor bugFix:&bugFix];
+            [MKSystem osVersionMajor:&major minor:&minor bugFix:&bugFix];
 
-            BOOL newFashion = (major == 10 && minor > 8);
+            BOOL const newFashion = (major == 10 && minor > 8);
 
             ProcessSerialNumber psn = { 0, kCurrentProcess };
             TransformProcessType(&psn, kProcessTransformToForegroundApplication);
@@ -77,13 +78,6 @@
     }
 
     return self;
-}
-
-
-- (void)dealloc {
-    self.window = nil;
-
-    [super dealloc];
 }
 
 

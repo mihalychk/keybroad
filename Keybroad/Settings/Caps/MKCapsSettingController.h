@@ -23,11 +23,14 @@
 
 
 #import <Foundation/Foundation.h>
-#import "MKCapsSettingWindow.h"
 
 
 
 NS_ASSUME_NONNULL_BEGIN
+
+
+
+typedef void (^MKCapsSettingCallback)(void);
 
 
 

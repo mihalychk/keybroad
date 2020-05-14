@@ -31,7 +31,7 @@
 
 
 + (NSButton *)buttonWithTitle:(nullable NSString *)title target:(nullable id)target action:(nullable SEL)action andRect:(NSRect)rect {
-    NSButton *const button = [[[NSButton alloc] initWithFrame:rect] autorelease];
+    __autoreleasing NSButton *const button = [[NSButton alloc] initWithFrame:rect];
 
     button.title = title;
     button.target = target;
@@ -43,10 +43,23 @@
 }
 
 
-+ (NSTextView *)textViewWithFrame:(NSRect)frame {
-    NSTextView *const textView = [[[NSTextView alloc] initWithFrame:frame] autorelease];
++ (NSButton *)checkboxWithTitle:(nullable NSString *)title target:(nullable id)target action:(nullable SEL)action {
+    __autoreleasing NSButton *const checkbox = [[NSButton alloc] init];
 
-    NSMutableParagraphStyle *const style = [[[NSMutableParagraphStyle alloc] init] autorelease];
+    checkbox.buttonType = NSSwitchButton;
+    checkbox.font = FONT_REGULAR(13.0f);
+    checkbox.title = title;
+    checkbox.target = target;
+    checkbox.action = action;
+
+    return checkbox;
+}
+
+
++ (NSTextView *)textViewWithFrame:(NSRect)frame {
+    __autoreleasing NSTextView *const textView = [[NSTextView alloc] initWithFrame:frame];
+
+    NSMutableParagraphStyle *const style = [[NSMutableParagraphStyle alloc] init];
     style.paragraphSpacing = 4.0f;
 
     textView.defaultParagraphStyle = style;
@@ -60,7 +73,7 @@
 
 
 + (NSTextView *)textViewWithText:(NSString *)text frame:(NSRect)frame {
-    NSTextView *const textView = [[[NSTextView alloc] initWithFrame:frame] autorelease];
+    __autoreleasing NSTextView *const textView = [[NSTextView alloc] initWithFrame:frame];
 
     textView.editable = NO;
     textView.backgroundColor = NSColor.clearColor;
@@ -70,6 +83,21 @@
     textView.alignment = NSTextAlignmentCenter;
 
     return textView;
+}
+
+
++ (MKUIInterfaceType)currentInterfaceType {
+    NSString *const value = [NSUserDefaults.standardUserDefaults stringForKey:@"AppleInterfaceStyle"];
+
+    if (!IS_STRING_1(value)) {
+        return MKUIInterfaceTypeLight;
+    }
+
+    if ([value.lowercaseString isEqualToString:@"dark"]) {
+        return MKUIInterfaceTypeDark;
+    }
+
+    return MKUIInterfaceTypeUnknown;
 }
 
 

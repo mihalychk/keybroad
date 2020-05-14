@@ -26,20 +26,22 @@
 #import "MKMenuController.h"
 #import "MKCommon.h"
 #import "MKSettings.h"
+#import "MKSystem.h"
 #import "MKLayout.h"
 #import "MKKeyStore.h"
 #import "MKPresetManager.h"
 #import "MKSharedApplication.h"
 #import "MKCapsSettingController.h"
+#import "MKUI.h"
 
 
 
 
 @interface MKMenuController () <NSMenuDelegate, MKStatusItemViewDelegate>
 
-@property (nonatomic, nullable, retain) MKCapsSettingController *capsController;
-@property (nonatomic, retain) NSStatusItem *mainMenu;
-@property (nonatomic, retain) MKStatusItemView *view;
+@property (nonatomic, nullable, strong) MKCapsSettingController *capsController;
+@property (nonatomic, strong) NSStatusItem *mainMenu;
+@property (nonatomic, strong) MKStatusItemView *view;
 
 @end
 
@@ -54,7 +56,7 @@
 - (instancetype)init {
     if ((self = [super init])) {
         self.mainMenu = [NSStatusBar.systemStatusBar statusItemWithLength:NSSquareStatusItemLength];
-        self.view = [[[MKStatusItemView alloc] initWithStatusBarItem:self.mainMenu] autorelease];
+        self.view = [[MKStatusItemView alloc] initWithStatusBarItem:self.mainMenu];
         self.view.delegate = self;
 
         [self.mainMenu setView:self.view];
@@ -69,13 +71,6 @@
 
 - (void)dealloc {
     [NSDistributedNotificationCenter.defaultCenter removeObserver:self];
-
-    self.capsController = nil;
-
-    [_view release];
-    [_mainMenu release];
-
-    [super dealloc];
 }
 
 
@@ -91,7 +86,7 @@
 - (void)updateImages {
     BOOL const inactive = [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID];
     BOOL const off = !SETTINGS.active;
-    BOOL const isDarkTheme = SETTINGS.currentInterfaceType == MKSettingsInterfaceTypeDark;
+    BOOL const isDarkTheme = MKUI.currentInterfaceType == MKUIInterfaceTypeDark;
     NSString *suffix = @"";
 
     if (off) {
@@ -143,7 +138,7 @@
 #pragma mark - Menu
 
 + (NSMenuItem *)menuItemWithTitle:(NSString *)title target:(id)target action:(SEL)action checked:(BOOL)checked andHotkey:(NSString *)hotkey {
-    NSMenuItem *const item = [[[NSMenuItem alloc] initWithTitle:title action:action keyEquivalent:hotkey] autorelease];
+    __autoreleasing NSMenuItem *const item = [[NSMenuItem alloc] initWithTitle:title action:action keyEquivalent:hotkey];
     item.target = target;
     item.state = (checked) ? NSOnState : NSOffState;
 
@@ -152,7 +147,7 @@
 
 
 + (NSMenu *)createMenuForTarget:(id<NSMenuDelegate>)target alt:(BOOL)alt {
-    NSMenu *const menu = [[[NSMenu alloc] init] autorelease];
+    __autoreleasing NSMenu *const menu = [[NSMenu alloc] init];
     menu.delegate = target;
 
     BOOL const isExcluded = [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID];
@@ -206,8 +201,7 @@
 - (void)onQuit:(NSMenuItem *)sender {
     NSLog(@"App quit");
 
-    SETTINGS.startup = NO;
-
+    [MKSystem enableApplicationStartUp:NO];
     [NSApplication.sharedApplication terminate:nil];
 }
 
@@ -216,9 +210,9 @@
     if (!self.capsController) {
         WEAKIFY(self);
 
-        self.capsController = [[[MKCapsSettingController alloc] initWithCallback:^{
+        self.capsController = [[MKCapsSettingController alloc] initWithCallback:^{
             selfWeakified.capsController = nil;
-        }] autorelease];
+        }];
     }
     else {
         [NSApp activateIgnoringOtherApps:YES];

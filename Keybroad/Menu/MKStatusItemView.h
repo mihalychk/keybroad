@@ -37,9 +37,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MKStatusItemView : NSControl
 
-@property (nonatomic, nullable, assign) id<MKStatusItemViewDelegate> delegate;
-@property (nonatomic, nullable, retain) NSImage *image;
-@property (nonatomic, nullable, retain) NSImage *alternateImage;
+@property (nonatomic, nullable, weak) id<MKStatusItemViewDelegate> delegate;
+@property (nonatomic, nullable, strong) NSImage *image;
+@property (nonatomic, nullable, strong) NSImage *alternateImage;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(NSRect)frameRect NS_UNAVAILABLE;

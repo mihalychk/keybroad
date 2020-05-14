@@ -1,9 +1,9 @@
 //
-//  main.m
+//  MKSystem.h
 //  Keybroad
 //
-//  Created by Mikhail Kalinin on 03.02.13.
-//  Copyright (c) 2013 Mikhail Kalinin. All rights reserved.
+//  Created by Mikhail Kalinin on 14.05.20.
+//  Copyright © 2020 Mikhail Kalinin. All rights reserved.
 //
 //  This file is part of Keybroad app.
 //
@@ -22,18 +22,25 @@
 
 
 
-#import <Cocoa/Cocoa.h>
-#import "MKAppDelegate.h"
+#import <Foundation/Foundation.h>
 
 
 
-int main(int argc, char *argv[]) {
-    @autoreleasepool {
-        MKAppDelegate *const delegate = [[MKAppDelegate alloc] init];
+NS_ASSUME_NONNULL_BEGIN
 
-        [NSApplication.sharedApplication setDelegate:delegate];
-        [NSApplication.sharedApplication run];
-    }
 
-    return 0;
-}
+
+@interface MKSystem : NSObject
+
+- (instancetype)init NS_UNAVAILABLE;
+
++ (BOOL)isApplicationStartingUp;
++ (void)enableApplicationStartUp:(BOOL)enabled;
++ (void)disableCapsLockStandardBehavior:(BOOL)disable;
++ (void)osVersionMajor:(NSUInteger *)major minor:(NSUInteger *)minor bugFix:(NSUInteger *)bugFix;
+
+@end
+
+
+
+NS_ASSUME_NONNULL_END

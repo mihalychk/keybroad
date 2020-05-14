@@ -22,8 +22,7 @@
 
 
 
-#import <Foundation/Foundation.h>
-#import "MKTableView.h"
+#import <Cocoa/Cocoa.h>
 
 
 
@@ -32,18 +31,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @protocol MKCapsSettingWindowDelegate;
-typedef void (^MKCapsSettingCallback)(void);
 
 
 
 @interface MKCapsSettingWindow : NSObject
 
-@property (nonatomic, nullable, assign) id<MKCapsSettingWindowDelegate> delegate;
-@property (nonatomic, nullable, retain) NSArray *layouts;
+@property (nonatomic, nullable, weak) id<MKCapsSettingWindowDelegate> delegate;
+@property (nonatomic, strong, readonly) NSWindow *window;
+@property (nonatomic, nullable, strong) NSArray *layouts;
 @property (nonatomic, assign) BOOL useCaps;
-
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithCallback:(nullable MKCapsSettingCallback)callback NS_DESIGNATED_INITIALIZER;
 
 - (void)setCapsOnLayout:(nullable NSString *)layoutName;
 - (void)setCapsOffLayout:(nullable NSString *)layoutName;
@@ -56,6 +52,7 @@ typedef void (^MKCapsSettingCallback)(void);
 
 @optional
 
+- (void)settingWindowWantsToClose:(MKCapsSettingWindow *)window;
 - (void)settingWindow:(MKCapsSettingWindow *)window didSwitchUseState:(BOOL)state;
 - (void)settingWindow:(MKCapsSettingWindow *)window didSelectIndex:(NSInteger)index forCapsState:(BOOL)state;
 

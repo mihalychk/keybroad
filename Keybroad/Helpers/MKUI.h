@@ -30,13 +30,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
+typedef NS_ENUM(NSUInteger, MKUIInterfaceType) {
+    MKUIInterfaceTypeUnknown = 0,
+    MKUIInterfaceTypeLight,
+    MKUIInterfaceTypeDark,
+};
+
+
+
 @interface MKUI : NSObject
 
 - (instancetype)init NS_UNAVAILABLE;
 
 + (NSButton *)buttonWithTitle:(nullable NSString *)title target:(nullable id)target action:(nullable SEL)action andRect:(NSRect)rect;
++ (NSButton *)checkboxWithTitle:(nullable NSString *)title target:(nullable id)target action:(nullable SEL)action;
 + (NSTextView *)textViewWithFrame:(NSRect)frame;
 + (NSTextView *)textViewWithText:(NSString *)text frame:(NSRect)frame;
++ (MKUIInterfaceType)currentInterfaceType;
 
 @end
 

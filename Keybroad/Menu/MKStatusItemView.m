@@ -30,7 +30,7 @@
 
 @property (nonatomic, assign) BOOL isMenuVisible;
 @property (nonatomic, assign) BOOL isMouseDown;
-@property (nonatomic, nullable, retain) NSStatusItem *statusItem;
+@property (nonatomic, nullable, strong) NSStatusItem *statusItem;
 
 - (void)menuWillOpen:(NSNotification *)notification;
 - (void)menuDidClose:(NSNotification *)notification;
@@ -55,22 +55,9 @@
 }
 
 
-- (void)dealloc {
-    self.alternateImage = nil;
-    self.delegate = nil;
-    self.image = nil;
-    self.statusItem = nil;
-
-    [super dealloc];
-}
-
-
 #pragma mark - Getters & Setters
 
 - (void)setImage:(nullable NSImage *)value {
-    [value retain];
-    [_image release];
-
     _image = value;
 
     [self setNeedsDisplay];
@@ -78,9 +65,6 @@
 
 
 - (void)setAlternateImage:(nullable NSImage *)value {
-    [value retain];
-    [_alternateImage release];
-
     _alternateImage = value;
 
     [self setNeedsDisplay];

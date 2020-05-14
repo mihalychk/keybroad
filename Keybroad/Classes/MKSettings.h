@@ -31,26 +31,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
-typedef NS_ENUM(NSUInteger, MKSettingsInterfaceType) {
-    MKSettingsInterfaceTypeUnknown = 0,
-    MKSettingsInterfaceTypeLight,
-    MKSettingsInterfaceTypeDark,
-};
-
-
-
 @interface MKSettings : NSObject
 
-@property (nonatomic, assign) BOOL startup;
 @property (nonatomic, assign) BOOL active;
 @property (nonatomic, assign) BOOL useCaps;
 @property (nonatomic, assign) BOOL wasInit;
-@property (nonatomic, assign) NSString * layoutForCapsOn;
-@property (nonatomic, assign) NSString * layoutForCapsOff;
+@property (nonatomic, nullable, copy) NSString *layoutForCapsOn;
+@property (nonatomic, nullable, copy) NSString *layoutForCapsOff;
 
 + (instancetype)sharedSettings;
-- (void)systemVersionMajor:(NSUInteger *)major minor:(NSUInteger *)minor bugFix:(NSUInteger *)bugFix;
-- (MKSettingsInterfaceType)currentInterfaceType;
 
 - (void)addExcludedApp:(NSString *)bundleId;
 - (void)removeExcludedApp:(NSString *)bundleId;

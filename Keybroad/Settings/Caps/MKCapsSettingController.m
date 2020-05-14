@@ -24,15 +24,16 @@
 
 #import "MKCommon.h"
 #import "MKCapsSettingController.h"
+#import "MKCapsSettingWindow.h"
 #import "MKLayout.h"
 #import "MKSettings.h"
 
 
 
-@interface MKCapsSettingController () <MKCapsSettingWindowDelegate>
+@interface MKCapsSettingController () <NSWindowDelegate, MKCapsSettingWindowDelegate>
 
 @property (nonatomic, nullable, copy) MKCapsSettingCallback complete;
-@property (nonatomic, nullable, retain) MKCapsSettingWindow *window;
+@property (nonatomic, nullable, strong) MKCapsSettingWindow *window;
 
 @end
 
@@ -47,33 +48,17 @@
     if ((self = [super init])) {
         self.complete = callback;
 
-        WEAKIFY(self);
-
-        self.window = [[MKCapsSettingWindow alloc] initWithCallback:^{
-            selfWeakified.window = nil;
-
-            if (selfWeakified.complete)
-                selfWeakified.complete();
-        }];
-
+        self.window = [[MKCapsSettingWindow alloc] init];
+        self.window.capsOffLayout = SETTINGS.layoutForCapsOff;
+        self.window.capsOnLayout = SETTINGS.layoutForCapsOn;
+        self.window.delegate = self;
         self.window.layouts = MKLayout.layout.layouts;
         self.window.useCaps = SETTINGS.useCaps;
 
-        [self.window setCapsOnLayout:SETTINGS.layoutForCapsOn];
-        [self.window setCapsOffLayout:SETTINGS.layoutForCapsOff];
-
-        self.window.delegate = self;     // IMPORTANT!!!
+        self.window.window.delegate = self;
     }
 
     return self;
-}
-
-
-- (void)dealloc {
-    self.complete = nil;
-    self.window = nil;
-
-    [super dealloc];
 }
 
 
@@ -93,6 +78,24 @@
     else {
         SETTINGS.layoutForCapsOff = value;
     }
+}
+
+
+- (void)settingWindowWantsToClose:(MKCapsSettingWindow *)window {
+    [window.window close];
+}
+
+
+#pragma mark -
+
+- (void)windowWillClose:(NSNotification *)notification {
+    WEAKIFY(self);
+
+    ASYNCH_MAINTHREAD(^{
+        if (selfWeakified.complete) {
+            selfWeakified.complete();
+        }
+    });
 }
 
 

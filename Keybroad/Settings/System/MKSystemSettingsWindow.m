@@ -37,8 +37,8 @@
 @interface MKSystemSettingsWindow () <NSWindowDelegate>
 
 @property (nonatomic, assign) BOOL onSettings;
-@property (nonatomic, retain) NSWindow *window;
-@property (nonatomic, nullable , copy) MKSystemSettingsCallback complete;
+@property (nonatomic, strong) NSWindow *window;
+@property (nonatomic, nullable, copy) MKSystemSettingsCallback complete;
 
 - (void)onSystemPreferences:(NSButton *)sender;
 - (void)windowWillClose:(NSNotification *)notification;
@@ -64,7 +64,7 @@
         CGFloat const newHeight = (newStyle) ? 569.0f : 512.0f;
         CGFloat const newShit = (newStyle) ? 0.0f : 10.0f;
 
-        NSImageView *const image = [[[NSImageView alloc] initWithFrame:NSMakeRect(3.0f, WINDOW_HEIGHT - 27.0f - newShit, 686.0f, newHeight)] autorelease];
+        NSImageView *const image = [[NSImageView alloc] initWithFrame:NSMakeRect(3.0f, WINDOW_HEIGHT - 27.0f - newShit, 686.0f, newHeight)];
         image.image = [NSImage imageNamed:(newStyle) ? @"kb_security" : @"kb_assistive"];
 
         [self.window.contentView addSubview:image];
@@ -93,14 +93,6 @@
 }
 
 
-- (void)dealloc {
-    self.complete = nil;
-    self.window = nil;
-
-    [super dealloc];
-}
-
-
 #pragma mark - Events
 
 - (void)onSystemPreferences:(NSButton *)sender {
@@ -114,8 +106,9 @@
     WEAKIFY(self);
 
     ASYNCH_MAINTHREAD(^{
-        if (selfWeakified.complete)
+        if (selfWeakified.complete) {
             selfWeakified.complete(selfWeakified.onSettings);
+        }
     });
 }
 

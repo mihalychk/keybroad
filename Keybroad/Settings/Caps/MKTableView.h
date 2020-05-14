@@ -36,8 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MKTableView : NSView
 
-@property (nonatomic, nullable, assign) id<MKTableViewDelegate> delegate;
-@property (nonatomic, nullable, retain) NSArray *layouts;
+@property (nonatomic, nullable, weak) id<MKTableViewDelegate> delegate;
+@property (nonatomic, nullable, strong) NSArray *layouts;
 @property (nonatomic, assign) NSInteger selectedIndex;
 @property (nonatomic, assign) BOOL enabled;
 

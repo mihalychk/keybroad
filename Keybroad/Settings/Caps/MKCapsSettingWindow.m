@@ -25,6 +25,7 @@
 #import <Cocoa/Cocoa.h>
 #import "MKCapsSettingWindow.h"
 #import "MKCommon.h"
+#import "MKTableView.h"
 #import "MKUI.h"
 
 
@@ -36,17 +37,15 @@
 
 
 
-@interface MKCapsSettingWindow () <NSWindowDelegate, MKTableViewDelegate>
+@interface MKCapsSettingWindow () <MKTableViewDelegate>
 
-@property (nonatomic, nullable, copy) MKCapsSettingCallback callback;
-@property (nonatomic, nullable, assign) NSButton *checkbox;
-@property (nonatomic, nullable, assign) NSButton *doneButton;
-@property (nonatomic, nullable, assign) MKTableView *tableOff;
-@property (nonatomic, nullable, assign) MKTableView *tableOn;
-@property (nonatomic, nullable, assign) NSTextView *textNote;
-@property (nonatomic, nullable, assign) NSTextView *textOff;
-@property (nonatomic, nullable, assign) NSTextView *textOn;
-@property (nonatomic, retain) NSWindow *window;
+@property (nonatomic, nullable, strong) NSButton *checkbox;
+@property (nonatomic, nullable, strong) NSButton *doneButton;
+@property (nonatomic, nullable, strong) MKTableView *tableOff;
+@property (nonatomic, nullable, strong) MKTableView *tableOn;
+@property (nonatomic, nullable, strong) NSTextView *textNote;
+@property (nonatomic, nullable, strong) NSTextView *textOff;
+@property (nonatomic, nullable, strong) NSTextView *textOn;
 
 - (void)setCapsLayout:(nullable NSString *)layoutName forTable:(MKTableView *)table;
 
@@ -54,46 +53,41 @@
 
 
 
-
 @implementation MKCapsSettingWindow
-
-
-#pragma mark - Helpers
 
 
 #pragma mark - init & dealloc
 
-- (instancetype)initWithCallback:(nullable MKCapsSettingCallback)callback {
+- (instancetype)init {
     if ((self = [super init])) {
-        self.callback = callback;
-
-        self.window = [[NSWindow alloc] initWithContentRect:NSMakeRect(10.0f, 10.0f, WINDOW_WIDTH, WINDOW_HEIGHT) styleMask:NSTitledWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:YES];
-        self.window.delegate = self;
+        // Window
+        _window = [[NSWindow alloc] initWithContentRect:NSMakeRect(10.0f, 10.0f, WINDOW_WIDTH, WINDOW_HEIGHT) styleMask:NSTitledWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:YES];
+        self.window.releasedWhenClosed = NO;
         self.window.title = BUNDLE_OBJ(@"CFBundleName");
 
         self.window.contentView.wantsLayer = YES;
         self.window.contentView.layer.masksToBounds = YES;
 
-        NSView *const back = [[[NSView alloc] initWithFrame:NSMakeRect(0.0f, WINDOW_HEIGHT - BACK_HEIGHT, WINDOW_WIDTH, BACK_HEIGHT)] autorelease];
+        NSView *const back = [[NSView alloc] initWithFrame:NSMakeRect(0.0f, WINDOW_HEIGHT - BACK_HEIGHT, WINDOW_WIDTH, BACK_HEIGHT)];
         back.wantsLayer = YES;
+        back.layer.backgroundColor = NSColor.controlColor.CGColor;
         back.layer.masksToBounds = YES;
 
         [self.window.contentView addSubview:back];
 
-        self.checkbox = [[[NSButton alloc] init] autorelease];
-        self.checkbox.buttonType = NSSwitchButton;
-        self.checkbox.font = FONT_REGULAR(13.0f);
-        self.checkbox.title = NSLocalizedString(@"Use Caps Lock to switch input sources", MK_CAPSLOCK_CATEGORY_STRING);
-        self.checkbox.target = self;
-        self.checkbox.action = @selector(onUse:);
+        // Checkbox
+        NSString *const checkboxTitle = NSLocalizedString(@"Use Caps Lock to switch input sources", MK_CAPSLOCK_CATEGORY_STRING);
+        self.checkbox = [MKUI checkboxWithTitle:checkboxTitle target:self action:@selector(onUse:)];
 
         [back addSubview:self.checkbox];
 
+        // Text Note
         NSString *const textNoteText = NSLocalizedString(@"Please relogin or restart your computer to apply changes", MK_CAPSLOCK_CATEGORY_STRING);
         self.textNote = [MKUI textViewWithText:textNoteText frame:NSMakeRect(0.0f, 0.0f, WINDOW_WIDTH, 32.0f)];
 
         [back addSubview:self.textNote];
 
+        // Text Caps On
         NSRect const textRect = NSMakeRect(0.0f, 0.0f, 191.0f, 32.0f);
         NSString *const textOnText = FORMAT(@"%@ ●", NSLocalizedString(@"Caps Lock On", MK_CAPSLOCK_CATEGORY_STRING));
         self.textOn = [MKUI textViewWithText:textOnText frame:textRect];
@@ -101,51 +95,39 @@
         [self.textOn setTextColor:RGB(0.0f, 1.0f, 0.77f) range:NSMakeRange(self.textOn.string.length - 1, 1)];
         [self.window.contentView addSubview:self.textOn];
 
+        // Text Caps Off
         NSString *const textOffText = FORMAT(@"%@ ●", NSLocalizedString(@"Caps Lock Off", MK_CAPSLOCK_CATEGORY_STRING));
         self.textOff = [MKUI textViewWithText:textOffText frame:textRect];
 
         [self.textOff setTextColor:NSColor.darkGrayColor range:NSMakeRange(self.textOff.string.length - 1, 1)];
         [self.window.contentView addSubview:self.textOff];
 
-        self.tableOn = [[[MKTableView alloc] initWithFrame:NSZeroRect] autorelease];
+        // Table Caps On
+        self.tableOn = [[MKTableView alloc] initWithFrame:NSZeroRect];
         self.tableOn.delegate = self;
 
         [self.window.contentView addSubview:self.tableOn];
 
-        self.tableOff = [[[MKTableView alloc] initWithFrame:NSZeroRect] autorelease];
+        // Table Caps Off
+        self.tableOff = [[MKTableView alloc] initWithFrame:NSZeroRect];
         self.tableOff.delegate = self;
 
         [self.window.contentView addSubview:self.tableOff];
 
+        // Done Button
         NSString *const doneButtonTitle = NSLocalizedString(@"Done", MK_CAPSLOCK_CATEGORY_STRING);
         self.doneButton = [MKUI buttonWithTitle:doneButtonTitle target:self action:@selector(onDone:) andRect:NSZeroRect];
 
         [self.doneButton sizeToFit];
         [self.window.contentView addSubview:self.doneButton];
 
+        // Init
         [self sizeToFit];
-        [self.window makeKeyAndOrderFront:nil];
+        [self.window makeKeyAndOrderFront:self];
         [NSApp activateIgnoringOtherApps:YES];
     }
 
     return self;
-}
-
-
-- (void)dealloc {
-    self.delegate = nil;
-    self.callback = nil;
-    self.checkbox = nil;
-    self.doneButton = nil;
-    self.layouts = nil;
-    self.tableOff = nil;
-    self.tableOn = nil;
-    self.textNote = nil;
-    self.textOff = nil;
-    self.textOn = nil;
-    self.window = nil;
-
-    [super dealloc];
 }
 
 
@@ -193,9 +175,6 @@
 #pragma mark - Getters & Setters
 
 - (void)setLayouts:(nullable NSArray *)value {
-    [value retain];
-    [_layouts release];
-
     _layouts = value;
 
     self.tableOn.layouts = self.layouts;
@@ -228,13 +207,15 @@
 #pragma mark - Actions
 
 - (void)onDone:(NSButton *)sender {
-    [self.window close];
+    if ([self.delegate respondsToSelector:@selector(settingWindowWantsToClose:)]) {
+        [self.delegate settingWindowWantsToClose:self];
+    }
 }
 
 
 - (void)onUse:(NSButton *)sender {
     if ([self.delegate respondsToSelector:@selector(settingWindow:didSwitchUseState:)]) {
-        [self.delegate settingWindow:self didSwitchUseState:[self useCaps]];
+        [self.delegate settingWindow:self didSwitchUseState:self.useCaps];
     }
 
     self.useCaps = self.useCaps;
@@ -270,16 +251,6 @@
 
     CGFloat const doneLeft = ceil((WINDOW_WIDTH - 90.0f) / 2.0f);
     self.doneButton.frame = NSMakeRect(doneLeft, 12.0f, 90.0f, self.doneButton.frame.size.height);
-}
-
-
-- (void)windowWillClose:(NSNotification *)notification {
-    WEAKIFY(self);
-
-    ASYNCH_MAINTHREAD(^{
-        if (selfWeakified.callback)
-            selfWeakified.callback();
-    });
 }
 
 

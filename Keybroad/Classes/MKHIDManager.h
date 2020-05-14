@@ -22,15 +22,14 @@
 
 
 
-
 #import <Foundation/Foundation.h>
-#import <IOKit/hid/IOHIDLib.h>
-
+#ifndef IOHIDManagerRef
+#   import <IOKit/hid/IOHIDLib.h>
+#endif
 
 
 
 @protocol MKHIDManagerDelegate;
-
 
 
 
@@ -43,7 +42,6 @@
 - (void)setCapsState:(BOOL)value;
 
 @end
-
 
 
 
