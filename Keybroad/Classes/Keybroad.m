@@ -22,7 +22,6 @@
 
 
 
-
 #import <Carbon/Carbon.h>
 #import "Keybroad.h"
 #import "MKCommon.h"
@@ -37,9 +36,7 @@
 
 
 
-
 #define SYMBOLS_IN_STORE 10
-
 
 
 
@@ -63,7 +60,6 @@
 
 
 
-
 @implementation Keybroad
 
 
@@ -84,8 +80,9 @@
         }];
 
         self.mouseHandler = [NSEvent addGlobalMonitorForEventsMatchingMask:(NSEventMask)NSLeftMouseUp handler:^(NSEvent * event) {
-            if (SETTINGS.active)
+            if (SETTINGS.active) {
                 [KEYSTORE invalidate];
+            }
         }];
 
         MKLayout.layout.delegate = self;
@@ -113,7 +110,7 @@
 #pragma mark - Caps
 
 - (void)updateCaps {
-    self.hidManager.capsState = [SETTINGS.layoutForCapsOn isEqualToString:MKLayout.layout.currentLayoutId];
+    self.hidManager.capsState = SETTINGS.useCapsToIndicate && [SETTINGS.layoutForCapsOn isEqualToString:MKLayout.layout.currentLayoutId];
 }
 
 
@@ -135,7 +132,7 @@
 
 
 - (void)sendText:(UniChar *)text length:(NSUInteger)length {
-    CGEventRef event = CGEventCreateKeyboardEvent(NULL, 0, true);
+    CGEventRef const event = CGEventCreateKeyboardEvent(NULL, 0, true);
 
     CGEventKeyboardSetUnicodeString(event, length, text);
     CGEventPost(kCGSessionEventTap, event);
@@ -144,25 +141,28 @@
 
 
 - (void)backspace:(NSUInteger)count {
-    for (int i = 0; i < count; i++) 
+    for (int i = 0; i < count; i++) {
         [self sendKeyCode:51 withModifiers:0];
+    }
 }
 
 
 #pragma mark - Public Methods
 
 - (void)typoSelectedText {
-    NSString * before = [SHARED_APP frontmostTopElementText:YES];
+    NSString *const before = [SHARED_APP frontmostTopElementText:YES];
 
-    if (!before || before.length < 1)
+    if (!before || before.length < 1) {
         return;
+    }
 
-    NSString * after = [PRESETS apply:before fromStart:NO];
+    NSString *const after = [PRESETS apply:before fromStart:NO];
 
-    if (!after || after.length < 1)
+    if (!after || after.length < 1) {
         return;
+    }
 
-    NSUInteger aLength = after.length;
+    NSUInteger const aLength = after.length;
 
     UniChar chars[aLength];
     memset(chars, 0, sizeof(chars));
@@ -170,18 +170,20 @@
     [after getBytes:chars maxLength:(aLength * sizeof(UniChar)) usedLength:NULL encoding:NSUTF16StringEncoding options:0 range:NSMakeRange(0, aLength) remainingRange:NULL];
     [self backspace:1];
 
-    NSUInteger step = 16;
-    NSUInteger steps = (aLength / step);
-    NSUInteger rest = aLength - (steps * step);
+    NSUInteger const step = 16;
+    NSUInteger const steps = (aLength / step);
+    NSUInteger const rest = aLength - (steps * step);
     int i = 0;
 
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25f, NO);
 
-    for (; i < aLength - rest; i+=step)
+    for (; i < aLength - rest; i += step) {
         [self sendText:&chars[i] length:step];
+    }
 
-    if (rest > 0)
+    if (rest > 0) {
         [self sendText:&chars[i] length:rest];
+    }
 }
 
 
@@ -229,7 +231,7 @@
     switch (symbol) {
         //case 0x7F:                    // Backspace
         case 0xF728:                    // Delete
-        case 0x09:                        // Tab
+        case 0x09:                      // Tab
         case 0xF700:                    // ↑
         case 0xF701:                    // ↓
         case 0xF702:                    // ←
@@ -238,8 +240,8 @@
         case 0xF72B:                    // End
         case 0xF72C:                    // Page Down
         case 0xF72D:                    // Page Up
-        //case 0x0D:                        // Enter
-        case 0x1B:                        // Escape
+        //case 0x0D:                    // Enter
+        case 0x1B:                      // Escape
             return NO;
 
         default:
@@ -253,11 +255,11 @@
 #pragma mark - MKHIDManagerDelegate
 
 - (void)hidManagerDidPressCapsLock:(MKHIDManager *)hidManager {
-    if (SETTINGS.useCaps) {
-        BOOL currentCapsState = [MKLayout.layout.currentLayoutId isEqualToString:SETTINGS.layoutForCapsOn];
-        BOOL capsState = !currentCapsState;
+    if (SETTINGS.useCapsToSwitch) {
+        BOOL const currentCapsState = [MKLayout.layout.currentLayoutId isEqualToString:SETTINGS.layoutForCapsOn];
+        BOOL const capsState = !currentCapsState;
 
-        NSString * newLayoutId = capsState ? SETTINGS.layoutForCapsOn : SETTINGS.layoutForCapsOff;
+        NSString *const newLayoutId = capsState ? SETTINGS.layoutForCapsOn : SETTINGS.layoutForCapsOff;
 
         [MKLayout.layout setLayout:newLayoutId];
 
@@ -276,17 +278,19 @@
 #pragma mark - Event Handler
 
 - (void)handleEvent:(NSEvent *)event {
-    if (!SETTINGS.active || [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID])
+    if (!SETTINGS.active || [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID]) {
         return;
+    }
 
     @synchronized (self) {
-        NSInteger processId = SHARED_APP.frontmostProcessID;
-        UniChar ch = [event.characters characterAtIndex:0];
-        NSUInteger modifiers = [event modifierFlags];
-        BOOL fromStart = (ch == 0x0D);
+        NSInteger const processId = SHARED_APP.frontmostProcessID;
+        UniChar const ch = [event.characters characterAtIndex:0];
+        NSUInteger const modifiers = [event modifierFlags];
+        BOOL const fromStart = (ch == 0x0D);
 
-        if (fromStart)
+        if (fromStart) {
             [KEYSTORE invalidate];
+        }
 
         if (modifiers & NX_COMMANDMASK && modifiers & NX_CONTROLMASK && event.keyCode == 17) {// Cmd + Ctrl + T
             [self typoSelectedText];
@@ -295,25 +299,28 @@
         }
 
         if (processId != 0 && processId == lastProcessId) {
-            if (modifiers & NX_COMMANDMASK)
+            if (modifiers & NX_COMMANDMASK) {
                 [KEYSTORE invalidate];
-
+            }
             else if (ch == 0x7F) {
-                if (modifiers & NX_ALTERNATEMASK)
+                if (modifiers & NX_ALTERNATEMASK) {
                     [KEYSTORE invalidate];
-
-                else
+                }
+                else {
                     [KEYSTORE backspace];
+                }
             }
             else if ([self stopSymbol:ch]) {
                 [KEYSTORE addSymbol:event.characters];
                 [self doKeyboard:fromStart];
             }
-            else
+            else {
                 [KEYSTORE invalidate];
+            }
         }
-        else
+        else {
             [KEYSTORE invalidate];
+        }
 
         lastProcessId = processId;
     }
@@ -321,11 +328,12 @@
 
 
 - (void)doKeyboard:(BOOL)fromStart {
-    if (isProcess)
+    if (isProcess) {
         return;
+    }
 
     isProcess = YES;
-    NSString * before = [KEYSTORE symbols:SYMBOLS_IN_STORE];
+    NSString *before = [KEYSTORE symbols:SYMBOLS_IN_STORE];
 
     if (![PRESETS check:before fromStart:fromStart]) {
         isProcess = NO;
@@ -333,7 +341,7 @@
         return;
     }
 
-    NSString * after = [PRESETS apply:before fromStart:fromStart];
+    NSString *after = [PRESETS apply:before fromStart:fromStart];
 
     if ([before isEqualToString:after] || (before.length < 1 || after.length < 1)) {
         isProcess = NO;
@@ -346,7 +354,7 @@
         after = [after substringFromIndex:1];
     }
 
-    NSUInteger aLength = after.length;
+    NSUInteger const aLength = after.length;
 
     [self backspace:before.length];
     [KEYSTORE invalidate];
@@ -356,11 +364,13 @@
     [after getBytes:chars maxLength:(aLength * sizeof(UniChar)) usedLength:NULL encoding:NSUTF16StringEncoding options:0 range:NSMakeRange(0, aLength) remainingRange:NULL];
     [self sendText:chars length:aLength];
 
-    for (int i = 0; i < aLength; i++)
+    for (int i = 0; i < aLength; i++) {
         [KEYSTORE addSymbol:[after substringWithRange:NSMakeRange(i, 1)]];
+    }
 
-    for (int i = 0; i < before.length; i++)
+    for (int i = 0; i < before.length; i++) {
         [KEYSTORE addSymbol:@"~"];
+    }
 
     isProcess = NO;
 }

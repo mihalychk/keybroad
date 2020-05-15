@@ -34,7 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKSettings : NSObject
 
 @property (nonatomic, assign) BOOL active;
-@property (nonatomic, assign) BOOL useCaps;
+@property (nonatomic, assign) BOOL useCapsToIndicate;
+@property (nonatomic, assign) BOOL useCapsToSwitch;
 @property (nonatomic, assign) BOOL wasInit;
 @property (nonatomic, nullable, copy) NSString *layoutForCapsOn;
 @property (nonatomic, nullable, copy) NSString *layoutForCapsOff;

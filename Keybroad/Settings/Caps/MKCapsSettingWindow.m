@@ -31,7 +31,7 @@
 
 
 #define WINDOW_WIDTH  500.0f
-#define WINDOW_HEIGHT 340.0f
+#define WINDOW_HEIGHT 380.0f
 #define BACK_HEIGHT   80.0f
 #define MK_CAPSLOCK_CATEGORY_STRING   @"Caps Lock Settings"
 
@@ -39,7 +39,8 @@
 
 @interface MKCapsSettingWindow () <MKTableViewDelegate>
 
-@property (nonatomic, nullable, strong) NSButton *checkbox;
+@property (nonatomic, nullable, strong) NSButton *switchCheckbox;
+@property (nonatomic, nullable, strong) NSButton *indicateCheckbox;
 @property (nonatomic, nullable, strong) NSButton *doneButton;
 @property (nonatomic, nullable, strong) MKTableView *tableOff;
 @property (nonatomic, nullable, strong) MKTableView *tableOn;
@@ -75,11 +76,17 @@
 
         [self.window.contentView addSubview:back];
 
-        // Checkbox
-        NSString *const checkboxTitle = NSLocalizedString(@"Use Caps Lock to switch input sources", MK_CAPSLOCK_CATEGORY_STRING);
-        self.checkbox = [MKUI checkboxWithTitle:checkboxTitle target:self action:@selector(onUse:)];
+        // Switch Checkbox
+        NSString *const switchCheckboxTitle = NSLocalizedString(@"Use Caps Lock to switch input sources", MK_CAPSLOCK_CATEGORY_STRING);
+        self.switchCheckbox = [MKUI checkboxWithTitle:switchCheckboxTitle target:self action:@selector(onUse:)];
 
-        [back addSubview:self.checkbox];
+        [back addSubview:self.switchCheckbox];
+
+        // Indicate Checkbox
+        NSString *const indicateCheckboxTitle = NSLocalizedString(@"Use Caps Lock to indicate input sources", MK_CAPSLOCK_CATEGORY_STRING);
+        self.indicateCheckbox = [MKUI checkboxWithTitle:indicateCheckboxTitle target:self action:@selector(onIndicate:)];
+
+        [self.window.contentView addSubview:self.indicateCheckbox];
 
         // Text Note
         NSString *const textNoteText = NSLocalizedString(@"Please relogin or restart your computer to apply changes", MK_CAPSLOCK_CATEGORY_STRING);
@@ -172,6 +179,14 @@
 }
 
 
+- (void)updateTables {
+    BOOL const value = self.useCapsToIndicate || self.useCapsToSwitch;
+
+    self.tableOn.enabled = value;
+    self.tableOff.enabled = value;
+}
+
+
 #pragma mark - Getters & Setters
 
 - (void)setLayouts:(nullable NSArray *)value {
@@ -192,15 +207,27 @@
 }
 
 
-- (void)setUseCaps:(BOOL)value {
-    self.checkbox.state = value ? 1 : 0;
-    self.tableOn.enabled = value;
-    self.tableOff.enabled = value;
+- (void)setUseCapsToIndicate:(BOOL)value {
+    self.indicateCheckbox.state = value ? 1 : 0;
+
+    [self updateTables];
 }
 
 
-- (BOOL)useCaps {
-    return self.checkbox.state == 1;
+- (BOOL)useCapsToIndicate {
+    return self.indicateCheckbox.state == 1;
+}
+
+
+- (void)setUseCapsToSwitch:(BOOL)value {
+    self.switchCheckbox.state = value ? 1 : 0;
+
+    [self updateTables];
+}
+
+
+- (BOOL)useCapsToSwitch {
+    return self.switchCheckbox.state == 1;
 }
 
 
@@ -213,12 +240,21 @@
 }
 
 
-- (void)onUse:(NSButton *)sender {
-    if ([self.delegate respondsToSelector:@selector(settingWindow:didSwitchUseState:)]) {
-        [self.delegate settingWindow:self didSwitchUseState:self.useCaps];
+- (void)onIndicate:(NSButton *)sender {
+    if ([self.delegate respondsToSelector:@selector(settingWindow:didUpdateCapsIndicateState:)]) {
+        [self.delegate settingWindow:self didUpdateCapsIndicateState:self.useCapsToIndicate];
     }
 
-    self.useCaps = self.useCaps;
+    self.useCapsToIndicate = self.useCapsToIndicate;
+}
+
+
+- (void)onUse:(NSButton *)sender {
+    if ([self.delegate respondsToSelector:@selector(settingWindow:didUpdateCapsSwitchState:)]) {
+        [self.delegate settingWindow:self didUpdateCapsSwitchState:self.useCapsToSwitch];
+    }
+
+    self.useCapsToSwitch = self.useCapsToSwitch;
 }
 
 
@@ -227,24 +263,32 @@
 - (void)sizeToFit {
     MK_WINDOW_SET_CENTER(self.window, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    [self.checkbox sizeToFit];
+    [self.switchCheckbox sizeToFit];
 
-    CGSize const chbxSize = self.checkbox.frame.size;
-    CGFloat const chbxHeight = 56.0f;
-    self.checkbox.frame = NSMakeRect(ceil((WINDOW_WIDTH - chbxSize.width) / 2.0f), BACK_HEIGHT - chbxSize.height - ceil((chbxHeight - chbxSize.height) / 2.0f), chbxSize.width, chbxSize.height);
+    CGSize const switchCheckboxSize = self.switchCheckbox.frame.size;
+    CGFloat const switchCheckboxHeight = 56.0f;
+    self.switchCheckbox.frame = NSMakeRect(ceil((WINDOW_WIDTH - switchCheckboxSize.width) / 2.0f), BACK_HEIGHT - switchCheckboxSize.height - ceil((switchCheckboxHeight - switchCheckboxSize.height) / 2.0f), switchCheckboxSize.width, switchCheckboxSize.height);
+
+    [self.indicateCheckbox sizeToFit];
 
     [self.textNote sizeToFit];
 
     CGSize const txtnSize = self.textNote.frame.size;
-    self.textNote.frame = NSMakeRect(ceil((WINDOW_WIDTH - txtnSize.width) / 2.0f), self.checkbox.frame.origin.y - txtnSize.height - 10.0f, txtnSize.width, txtnSize.height);
+    self.textNote.frame = NSMakeRect(ceil((WINDOW_WIDTH - txtnSize.width) / 2.0f), self.switchCheckbox.frame.origin.y - txtnSize.height - 10.0f, txtnSize.width, txtnSize.height);
+
+    CGSize const indicateCheckboxSize = self.indicateCheckbox.frame.size;
+    CGFloat const indicateCheckboxHeight = 56.0f;
+    self.indicateCheckbox.frame = NSMakeRect(ceil((WINDOW_WIDTH - indicateCheckboxSize.width) / 2.0f), 276.0f - ceil((indicateCheckboxHeight - indicateCheckboxSize.height) / 2.0f), indicateCheckboxSize.width, indicateCheckboxSize.height);
 
     [self.textOn sizeToFit];
 
-    self.textOn.frame = NSMakeRect(39.0f, 206.0f, self.textOn.frame.size.width, self.textOn.frame.size.height);
+    NSSize const textOnSize = self.textOn.frame.size;
+    self.textOn.frame = NSMakeRect(39.0f, 206.0f, textOnSize.width, textOnSize.height);
 
     [self.textOff sizeToFit];
 
-    self.textOff.frame = NSMakeRect(270.0f, 206.0f, self.textOff.frame.size.width, self.textOff.frame.size.height);
+    NSSize const textOffSize = self.textOff.frame.size;
+    self.textOff.frame = NSMakeRect(270.0f, 206.0f, textOffSize.width, textOffSize.height);
 
     self.tableOn.frame = NSMakeRect(39.0f, 59.0f, 191.0f, 152.0f);
     self.tableOff.frame = NSMakeRect(270.0f, 59.0f, 191.0f, 152.0f);

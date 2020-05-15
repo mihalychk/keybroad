@@ -39,7 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, weak) id<MKCapsSettingWindowDelegate> delegate;
 @property (nonatomic, strong, readonly) NSWindow *window;
 @property (nonatomic, nullable, strong) NSArray *layouts;
-@property (nonatomic, assign) BOOL useCaps;
+@property (nonatomic, assign) BOOL useCapsToIndicate;
+@property (nonatomic, assign) BOOL useCapsToSwitch;
 
 - (void)setCapsOnLayout:(nullable NSString *)layoutName;
 - (void)setCapsOffLayout:(nullable NSString *)layoutName;
@@ -53,7 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 @optional
 
 - (void)settingWindowWantsToClose:(MKCapsSettingWindow *)window;
-- (void)settingWindow:(MKCapsSettingWindow *)window didSwitchUseState:(BOOL)state;
+- (void)settingWindow:(MKCapsSettingWindow *)window didUpdateCapsIndicateState:(BOOL)state;
+- (void)settingWindow:(MKCapsSettingWindow *)window didUpdateCapsSwitchState:(BOOL)state;
 - (void)settingWindow:(MKCapsSettingWindow *)window didSelectIndex:(NSInteger)index forCapsState:(BOOL)state;
 
 @end

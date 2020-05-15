@@ -22,10 +22,8 @@
 
 
 
-
 #import "MKCommon.h"
 #import "MKHIDManager.h"
-
 
 
 
@@ -34,7 +32,6 @@
 }
 
 @end
-
 
 
 
@@ -72,11 +69,11 @@
 #pragma mark - Static Methods
 
 + (IOHIDManagerRef)hidManager {
-    IOHIDManagerRef HIDManagerRef = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
+    IOHIDManagerRef const HIDManagerRef = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
 
-    NSDictionary * keyboard = [self matchingDeviceDictionaryWithPage:kHIDPage_GenericDesktop andUsage:kHIDUsage_GD_Keyboard];
-    NSDictionary * leds = [self matchingDeviceDictionaryWithPage:kHIDPage_LEDs andUsage:kHIDUsage_Undefined];
-    NSArray * matches = [NSArray arrayWithObjects:keyboard, leds, nil];
+    NSDictionary *const keyboard = [self matchingDeviceDictionaryWithPage:kHIDPage_GenericDesktop andUsage:kHIDUsage_GD_Keyboard];
+    NSDictionary *const leds = [self matchingDeviceDictionaryWithPage:kHIDPage_LEDs andUsage:kHIDUsage_Undefined];
+    NSArray *const matches = [NSArray arrayWithObjects:keyboard, leds, nil];
 
     IOHIDManagerSetDeviceMatchingMultiple(HIDManagerRef, (CFArrayRef)matches);
 
@@ -85,26 +82,30 @@
 
 
 + (NSDictionary *)matchingDeviceDictionaryWithPage:(UInt32)page andUsage:(UInt32)usage {
-    NSMutableDictionary * result = NSMutableDictionary.dictionary;
+    NSMutableDictionary *const result = NSMutableDictionary.dictionary;
 
-    if (page != kHIDPage_Undefined)
+    if (page != kHIDPage_Undefined) {
         result[CSTRING(kIOHIDDeviceUsagePageKey)] = @(page);
+    }
 
-    if (usage != kHIDUsage_Undefined)
+    if (usage != kHIDUsage_Undefined) {
         result[CSTRING(kIOHIDDeviceUsageKey)] = @(usage);
+    }
 
     return [NSDictionary dictionaryWithDictionary:result]; // autoreleased
 }
 
 
 + (NSDictionary *)matchingElementDictionaryWithPage:(UInt32)page andUsage:(UInt32)usage {
-    NSMutableDictionary * result = NSMutableDictionary.dictionary;
+    NSMutableDictionary *const result = NSMutableDictionary.dictionary;
 
-    if (page != kHIDPage_Undefined)
+    if (page != kHIDPage_Undefined) {
         result[(NSString *)CFSTR(kIOHIDElementUsagePageKey)] = @(page);
+    }
 
-    if (usage != kHIDUsage_Undefined)
+    if (usage != kHIDUsage_Undefined) {
         result[(NSString *)CFSTR(kIOHIDElementUsageKey)] = @(usage);
+    }
 
     return [NSDictionary dictionaryWithDictionary:result]; // autoreleased
 }
@@ -113,37 +114,41 @@
 #pragma mark - MKHIDManagerDelegate
 
 - (void)onCapsLock {
-    if ([self.delegate respondsToSelector:@selector(hidManagerDidPressCapsLock:)])
+    if ([self.delegate respondsToSelector:@selector(hidManagerDidPressCapsLock:)]) {
         [self.delegate hidManagerDidPressCapsLock:self];
+    }
 }
 
  
 - (void)setCapsState:(BOOL)newState {
-    CFSetRef deviceCFSetRef = IOHIDManagerCopyDevices(hidManager);
-    CFIndex deviceCount = CFSetGetCount(deviceCFSetRef);
-    IOHIDDeviceRef * deviceRefs = malloc(sizeof(IOHIDDeviceRef) * deviceCount);
+    CFSetRef const deviceCFSetRef = IOHIDManagerCopyDevices(hidManager);
+    CFIndex const deviceCount = CFSetGetCount(deviceCFSetRef);
+    IOHIDDeviceRef *const deviceRefs = malloc(sizeof(IOHIDDeviceRef) * deviceCount);
 
     CFSetGetValues(deviceCFSetRef, (const void **)deviceRefs);
     CFRelease(deviceCFSetRef);
 
-    NSDictionary * matches = [MKHIDManager matchingElementDictionaryWithPage:kHIDPage_LEDs andUsage:kHIDUsage_LED_CapsLock];
+    NSDictionary *const matches = [MKHIDManager matchingElementDictionaryWithPage:kHIDPage_LEDs andUsage:kHIDUsage_LED_CapsLock];
 
     for (NSUInteger deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++) {
-        if (!IOHIDDeviceConformsTo(deviceRefs[deviceIndex], kHIDPage_GenericDesktop, kHIDUsage_GD_Keyboard))
+        if (!IOHIDDeviceConformsTo(deviceRefs[deviceIndex], kHIDPage_GenericDesktop, kHIDUsage_GD_Keyboard)) {
             continue;
+        }
 
-        NSArray * elements = (NSArray *)IOHIDDeviceCopyMatchingElements(deviceRefs[deviceIndex], (CFDictionaryRef)matches, kIOHIDOptionsTypeNone);
+        NSArray *const elements = (NSArray *)IOHIDDeviceCopyMatchingElements(deviceRefs[deviceIndex], (CFDictionaryRef)matches, kIOHIDOptionsTypeNone);
 
         for (NSUInteger index = 0; index < elements.count; index++) {
-            IOHIDElementRef elementRef = (IOHIDElementRef)elements[index];
-            uint32_t usagePage = IOHIDElementGetUsagePage(elementRef);
-            uint32_t usage = IOHIDElementGetUsage(elementRef);
+            IOHIDElementRef const elementRef = (IOHIDElementRef)elements[index];
+            uint32_t const usagePage = IOHIDElementGetUsagePage(elementRef);
+            uint32_t const usage = IOHIDElementGetUsage(elementRef);
 
-            if (usagePage != kHIDPage_LEDs || usage != kHIDUsage_LED_CapsLock)
+            if (usagePage != kHIDPage_LEDs || usage != kHIDUsage_LED_CapsLock) {
                 continue;
+            }
 
-            IOHIDValueRef valueRef = IOHIDValueCreateWithIntegerValue(kCFAllocatorDefault, elementRef, 0, newState ? 1 : 0);
+            IOHIDValueRef const valueRef = IOHIDValueCreateWithIntegerValue(kCFAllocatorDefault, elementRef, 0, newState ? 1 : 0);
 
+            // TODO: Sleep Crash is here
             if (valueRef) {
                 IOHIDDeviceSetValue(deviceRefs[deviceIndex], elementRef, valueRef);
                 CFRelease(valueRef);
@@ -159,23 +164,26 @@
 
 #pragma mark - HID Callbacks
 
-void myHIDKeyboardCallback(void * context, IOReturn result, void * sender, IOHIDValueRef value) {
-    IOHIDElementRef elem = IOHIDValueGetElement(value);
+void myHIDKeyboardCallback(void *context, IOReturn result, void *sender, IOHIDValueRef value) {
+    IOHIDElementRef const elem = IOHIDValueGetElement(value);
 
-    if (IOHIDElementGetUsagePage(elem) != kHIDPage_KeyboardOrKeypad)
+    if (IOHIDElementGetUsagePage(elem) != kHIDPage_KeyboardOrKeypad) {
         return;
+    }
 
-    uint32_t scancode = IOHIDElementGetUsage(elem);
+    uint32_t const scancode = IOHIDElementGetUsage(elem);
 
-    if (scancode != kHIDUsage_KeyboardCapsLock)
+    if (scancode != kHIDUsage_KeyboardCapsLock) {
         return;
+    }
 
-    long pressed = IOHIDValueGetIntegerValue(value); // 1 - pressed, 0 - released
+    long const pressed = IOHIDValueGetIntegerValue(value); // 1 - pressed, 0 - released
 
-    if (pressed == 0)
+    if (pressed == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [(MKHIDManager *)context onCapsLock];
         });
+    }
 }
 
 

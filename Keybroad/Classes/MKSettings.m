@@ -74,15 +74,25 @@
 }
 
 
--(void)setUseCaps:(BOOL)value {
-    [self saveBool:value forKey:@"useCaps"];
+-(void)setUseCapsToIndicate:(BOOL)value {
+    [self saveBool:value forKey:@"useCapsToIndicate"];
+}
+
+
+-(BOOL)useCapsToIndicate {
+    return [self boolForKey:@"useCapsToIndicate"];
+}
+
+
+-(void)setUseCapsToSwitch:(BOOL)value {
+    [self saveBool:value forKey:@"useCapsToSwitch"];
 
     [MKSystem disableCapsLockStandardBehavior:value];
 }
 
 
--(BOOL)useCaps {
-    return [self boolForKey:@"useCaps"];
+-(BOOL)useCapsToSwitch {
+    return [self boolForKey:@"useCapsToSwitch"];
 }
 
 

@@ -49,11 +49,12 @@
         self.complete = callback;
 
         self.window = [[MKCapsSettingWindow alloc] init];
+        self.window.layouts = MKLayout.layout.layouts;
         self.window.capsOffLayout = SETTINGS.layoutForCapsOff;
         self.window.capsOnLayout = SETTINGS.layoutForCapsOn;
         self.window.delegate = self;
-        self.window.layouts = MKLayout.layout.layouts;
-        self.window.useCaps = SETTINGS.useCaps;
+        self.window.useCapsToIndicate = SETTINGS.useCapsToIndicate;
+        self.window.useCapsToSwitch = SETTINGS.useCapsToSwitch;
 
         self.window.window.delegate = self;
     }
@@ -64,8 +65,13 @@
 
 #pragma mark -
 
-- (void)settingWindow:(MKCapsSettingWindow *)window didSwitchUseState:(BOOL)state {
-    SETTINGS.useCaps = state;
+- (void)settingWindow:(MKCapsSettingWindow *)window didUpdateCapsIndicateState:(BOOL)state {
+    SETTINGS.useCapsToIndicate = state;
+}
+
+
+- (void)settingWindow:(MKCapsSettingWindow *)window didUpdateCapsSwitchState:(BOOL)state {
+    SETTINGS.useCapsToSwitch = state;
 }
 
 
