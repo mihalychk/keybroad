@@ -44,7 +44,6 @@
     NSInteger lastProcessId;
     id keyboardHandler;
     id mouseHandler;
-    BOOL isProcess;
 }
 
 - (void)handleEvent:(NSEvent *)event;
@@ -54,7 +53,10 @@
 
 @property (nonatomic, retain) id keyboardHandler;
 @property (nonatomic, retain) id mouseHandler;
-@property (nonatomic, retain) MKHIDManager * hidManager;
+@property (nonatomic, retain) MKHIDManager *hidManager;
+
+@property (nonatomic, assign) BOOL isProcess;
+@property (nonatomic, assign) BOOL isUserSessionLocked;
 
 @end
 
@@ -70,10 +72,13 @@
 
 - (instancetype)init {
     if ((self = [super init])) {
+        [NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(userSessionLocked:) name:@"com.apple.screenIsLocked" object:nil];
+        [NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(userSessionUnlocked:) name:@"com.apple.screenIsUnlocked" object:nil];
+
         self.hidManager = [[[MKHIDManager alloc] init] autorelease];
         self.hidManager.delegate = self;
         lastProcessId = -1;
-        isProcess = NO;
+        self.isProcess = NO;
 
         self.keyboardHandler = [NSEvent addGlobalMonitorForEventsMatchingMask:(NSKeyDownMask) handler:^(NSEvent * event){
             [self handleEvent:event];
@@ -102,7 +107,11 @@
 
     [NSEvent removeMonitor:keyboardHandler];
     [NSEvent removeMonitor:mouseHandler];
+
     [keyboardHandler release];
+
+    [NSDistributedNotificationCenter.defaultCenter removeObserver:self];
+
     [super dealloc];
 }
 
@@ -110,6 +119,10 @@
 #pragma mark - Caps
 
 - (void)updateCaps {
+    if (self.isUserSessionLocked || !SETTINGS.useCapsToIndicate) {
+        return;
+    }
+
     self.hidManager.capsState = SETTINGS.useCapsToIndicate && [SETTINGS.layoutForCapsOn isEqualToString:MKLayout.layout.currentLayoutId];
 }
 
@@ -190,17 +203,17 @@
 - (void)onFrontmostAppChanged {
     [self updateCaps];
 
-    ASYNCH_MAINTHREAD_AFTER(0.125f, ^{
-        [self updateCaps];
-    });
-
-    ASYNCH_MAINTHREAD_AFTER(0.25f, ^{
-        [self updateCaps];
-    });
-
-    ASYNCH_MAINTHREAD_AFTER(0.5f, ^{
-        [self updateCaps];
-    });
+//    ASYNCH_MAINTHREAD_AFTER(0.125f, ^{
+//        [self updateCaps];
+//    });
+//
+//    ASYNCH_MAINTHREAD_AFTER(0.25f, ^{
+//        [self updateCaps];
+//    });
+//
+//    ASYNCH_MAINTHREAD_AFTER(0.5f, ^{
+//        [self updateCaps];
+//    });
 }
 
 
@@ -259,11 +272,11 @@
         BOOL const currentCapsState = [MKLayout.layout.currentLayoutId isEqualToString:SETTINGS.layoutForCapsOn];
         BOOL const capsState = !currentCapsState;
 
-        NSString *const newLayoutId = capsState ? SETTINGS.layoutForCapsOn : SETTINGS.layoutForCapsOff;
+        if (SETTINGS.useCapsToSwitch) {
+            NSString *const newLayoutId = capsState ? SETTINGS.layoutForCapsOn : SETTINGS.layoutForCapsOff;
 
-        [MKLayout.layout setLayout:newLayoutId];
-
-        self.hidManager.capsState = capsState;
+            [MKLayout.layout setLayout:newLayoutId];
+        }
     }
 }
 
@@ -275,10 +288,22 @@
 }
 
 
+#pragma mark - NSDistributedNotificationCenter
+
+- (void)userSessionLocked:(NSNotification *)notification {
+    self.isUserSessionLocked = YES;
+}
+
+
+- (void)userSessionUnlocked:(NSNotification *)notification {
+    self.isUserSessionLocked = NO;
+}
+
+
 #pragma mark - Event Handler
 
 - (void)handleEvent:(NSEvent *)event {
-    if (!SETTINGS.active || [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID]) {
+    if (self.isUserSessionLocked || !SETTINGS.active || [SETTINGS isExcluded:SHARED_APP.frontmostProcessBundleID]) {
         return;
     }
 
@@ -328,15 +353,15 @@
 
 
 - (void)doKeyboard:(BOOL)fromStart {
-    if (isProcess) {
+    if (self.isProcess) {
         return;
     }
 
-    isProcess = YES;
+    self.isProcess = YES;
     NSString *before = [KEYSTORE symbols:SYMBOLS_IN_STORE];
 
     if (![PRESETS check:before fromStart:fromStart]) {
-        isProcess = NO;
+        self.isProcess = NO;
 
         return;
     }
@@ -344,7 +369,7 @@
     NSString *after = [PRESETS apply:before fromStart:fromStart];
 
     if ([before isEqualToString:after] || (before.length < 1 || after.length < 1)) {
-        isProcess = NO;
+        self.isProcess = NO;
 
         return;
     }
@@ -372,7 +397,7 @@
         [KEYSTORE addSymbol:@"~"];
     }
 
-    isProcess = NO;
+    self.isProcess = NO;
 }
 
 

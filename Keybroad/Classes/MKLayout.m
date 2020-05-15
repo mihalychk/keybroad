@@ -190,15 +190,15 @@
 - (void)setLayout:(NSString *)targetLayoutId {
     capsLockPressed = YES;
 
-    NSArray * sourceArray = self.sourceList;
+    NSArray *const sourceArray = self.sourceList;
 
     for (NSUInteger i = 0; i < sourceArray.count; i++) {
-        TISInputSourceRef ref = (TISInputSourceRef)sourceArray[i];
+        TISInputSourceRef const ref = (TISInputSourceRef)sourceArray[i];
 
-        NSString * layoutType = TISGetInputSourceProperty(ref, kTISPropertyInputSourceType);
+        NSString *const layoutType = TISGetInputSourceProperty(ref, kTISPropertyInputSourceType);
 
         if ([layoutType isEqualToString:@"TISTypeKeyboardLayout"]) {
-            NSString * layoutId = TISGetInputSourceProperty(ref, kTISPropertyInputSourceID);
+            NSString *const layoutId = TISGetInputSourceProperty(ref, kTISPropertyInputSourceID);
 
             if ([layoutId isEqualToString:targetLayoutId]) {
                 TISSelectInputSource(ref);

@@ -22,7 +22,6 @@
 
 
 
-
 #import "MKAppDelegate.h"
 #import "Keybroad.h"
 #import "MKLayout.h"
@@ -35,7 +34,6 @@
 
 
 
-
 @interface MKAppDelegate () <MKSharedApplicationDelegate>
 
 @property (nonatomic, nullable, strong) MKMenuController *controller;
@@ -43,7 +41,6 @@
 @property (nonatomic, nullable, strong) MKSystemSettingsController *settingsController;
 
 @end
-
 
 
 

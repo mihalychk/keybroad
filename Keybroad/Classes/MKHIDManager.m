@@ -137,25 +137,27 @@
 
         NSArray *const elements = (NSArray *)IOHIDDeviceCopyMatchingElements(deviceRefs[deviceIndex], (CFDictionaryRef)matches, kIOHIDOptionsTypeNone);
 
-        for (NSUInteger index = 0; index < elements.count; index++) {
-            IOHIDElementRef const elementRef = (IOHIDElementRef)elements[index];
-            uint32_t const usagePage = IOHIDElementGetUsagePage(elementRef);
-            uint32_t const usage = IOHIDElementGetUsage(elementRef);
+        if (elements) {
+            for (NSUInteger index = 0; index < elements.count; index++) {
+                IOHIDElementRef const elementRef = (IOHIDElementRef)elements[index];
+                uint32_t const usagePage = IOHIDElementGetUsagePage(elementRef);
+                uint32_t const usage = IOHIDElementGetUsage(elementRef);
 
-            if (usagePage != kHIDPage_LEDs || usage != kHIDUsage_LED_CapsLock) {
-                continue;
+                if (usagePage != kHIDPage_LEDs || usage != kHIDUsage_LED_CapsLock) {
+                    continue;
+                }
+
+                IOHIDValueRef const valueRef = IOHIDValueCreateWithIntegerValue(kCFAllocatorDefault, elementRef, 0, newState ? 1 : 0);
+
+                // TODO: Sleep Crash is here
+                if (valueRef) {
+                    IOHIDDeviceSetValue(deviceRefs[deviceIndex], elementRef, valueRef);
+                    CFRelease(valueRef);
+                }
             }
 
-            IOHIDValueRef const valueRef = IOHIDValueCreateWithIntegerValue(kCFAllocatorDefault, elementRef, 0, newState ? 1 : 0);
-
-            // TODO: Sleep Crash is here
-            if (valueRef) {
-                IOHIDDeviceSetValue(deviceRefs[deviceIndex], elementRef, valueRef);
-                CFRelease(valueRef);
-            }
+            [elements release];
         }
-
-        [elements release];
     }
 
     free(deviceRefs);
